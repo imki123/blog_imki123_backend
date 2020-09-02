@@ -5,7 +5,7 @@ const router = new Router()
 // posts 종류 : get/, post/, get/:id, delete/:id, put/:id, patch/:id
 // 라우터 설정
 
-//포스트 전체 목록
+//포스트 전체 목록 list
 router.get('/', async ctx => {
     try{
         const posts = await Post.find().exec()
@@ -15,7 +15,7 @@ router.get('/', async ctx => {
     }
     
 })
-//포스트 작성
+//포스트 작성 post
 router.post('/', async ctx => {
     console.log(ctx)
     const {title, body, tags} = ctx.request.body
@@ -31,15 +31,15 @@ router.post('/', async ctx => {
         ctx.throw(500, e)
     }
 })
-//특정 포스트 조회
+//특정 포스트 조회 read
 router.get('/:id', ctx => {
     ctx.body = 'read'
 })
-//특정 포스트 삭제
+//특정 포스트 삭제 delete
 router.delete('/:id', ctx => {
     ctx.body = 'delete'
 })
-//특정 포스트 수정
+//특정 포스트 수정 update
 router.patch('/:id', ctx => {
     ctx.body = 'update'
 })
