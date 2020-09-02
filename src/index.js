@@ -16,7 +16,16 @@ const router = new Router()
 
 //라우터 설정
 router.get('/', (ctx) => {
-	ctx.body = 'posts 종류 : get/, post/, get/:id, delete/:id, put/:id, patch/:id'
+    ctx.body = `Hello, blog_imki123_backend
+
+post: post(/posts/)
+list: get(/posts/)
+read: get(/posts/id)
+delete: delete(/posts/id)
+update: patch(/posts/id)
+
+Thanks :D
+`
 })
 router.use('/posts', posts.routes()) //posts 라우트 적용
 
