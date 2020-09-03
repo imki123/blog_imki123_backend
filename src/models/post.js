@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 
 const {Schema} = mongoose
 const PostSchema = new Schema({
+    postId: {
+        type: Number,
+        default: 1
+    },
     title: String,
     body: String, 
     tags: [String],
