@@ -22,6 +22,7 @@ router.get('/', (ctx) => {
 
 post: post(/posts/)
 list: get(/posts/)
+tag list: get(/posts/tag)
 read: get(/posts/id)
 delete: delete(/posts/id)
 update: patch(/posts/id)

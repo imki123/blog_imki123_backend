@@ -35,7 +35,7 @@ router.post('/', async ctx => {
 //포스트 전체 목록 list
 router.get('/', async ctx => {
     try{
-        const posts = await Post.find()
+        const posts = await Post.find().sort({publishedDate:-1})
         ctx.body = posts
     }catch(e){
         ctx.throw(500, e)
@@ -45,7 +45,7 @@ router.get('/', async ctx => {
 router.get('/:tag', async ctx => {
     try{
         const {tag} = ctx.params
-        const post = await Post.find({tags: tag})
+        const post = await Post.find({tags: tag}).sort({publishedDate:-1})
         if(post){
             ctx.body = post
         }else{
