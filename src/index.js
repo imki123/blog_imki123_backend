@@ -4,6 +4,8 @@ const Router = require('koa-router')
 const posts = require('./posts')
 const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
+const cors = require('@koa/cors')
+
 
 const {PORT, MONGO_URI} = process.env
 
@@ -28,6 +30,17 @@ Thanks :D
 `
 })
 router.use('/posts', posts.routes()) //posts 라우트 적용
+
+//cors 정책 적용
+const whitelist = ['http://localhost:3000','https://imki123.github.io/blog_imki123/'];
+function checkOriginAgainstWhitelist(ctx) { //https://madole.xyz/whitelisting-multiple-domains-with-kcors-in-koa
+    const requestOrigin = ctx.accept.headers.origin;
+    if (!whitelist.includes(requestOrigin)) {
+        return ctx.throw(`🙈 ${requestOrigin} is not a valid origin`);
+    }
+    return requestOrigin;
+ }
+app.use(cors({origin: checkOriginAgainstWhitelist}))
 
 //body-parser 사용
 app.use(bodyParser())
