@@ -55,7 +55,8 @@ router.get('/:tag', async (ctx) => {
 			.sort({ publishedDate: -1 }) //역순
 			.limit(5) //5건씩 불러옴
 			.skip((page - 1) * 5) //5건마다 페이지 스킵
-		const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
+        const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
+        ctx.set('Total-post', postCount)
 		ctx.set('Last-Page', Math.ceil(postCount / 5))
 		if (post) {
 			ctx.body = post
