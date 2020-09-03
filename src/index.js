@@ -51,5 +51,5 @@ app.use(router.routes()).use(router.allowedMethods())
 const port = PORT || 4000
 
 app.listen(port, () => {
-	console.log(`Connect to http://localhost:${port}`)
+	console.log(`Listening on port: ${port}\nConnect to http://localhost:${port}`)
 })
