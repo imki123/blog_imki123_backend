@@ -41,6 +41,21 @@ router.get('/', async ctx => {
         ctx.throw(500, e)
     }
 })
+//특정 태그 포스트 목록 list
+router.get('/:tag', async ctx => {
+    try{
+        const {tag} = ctx.params
+        const post = await Post.find({tags: tag})
+        if(post){
+            ctx.body = post
+        }else{
+            ctx.status = 404 //Not found
+            return
+        }
+    }catch(e){
+        ctx.throw(500, e)
+    }
+})
 //특정 포스트 조회 read
 router.get('/:postId', async ctx => {
     try{
