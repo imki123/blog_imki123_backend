@@ -6,9 +6,16 @@ const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
 const cors = require('@koa/cors')
 
-
 const {PORT, MONGO_URI} = process.env
 
+//heroku sleep 방지
+const http = require("http");
+setInterval(function () {
+    http.get("http://log-imki123-backend.herokuapp.com");
+}, 600000);
+
+
+//mongoDB 연결
 mongoose.connect(MONGO_URI,{useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true})
     .then(() => {console.log('Connected to MongoDB')})
     .catch(e => {console.error(e)})
