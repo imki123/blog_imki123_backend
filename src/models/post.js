@@ -13,6 +13,10 @@ const PostSchema = new Schema({
         type: Date,
         default: Date.now //현재날짜 기본값
     },
+    user:{
+        _id: mongoose.Types.ObjectId,
+        username: String,
+    },
 })
 
 const Post = mongoose.model('Post', PostSchema)
