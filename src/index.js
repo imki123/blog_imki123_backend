@@ -52,7 +52,11 @@ function checkOriginAgainstWhitelist(ctx) { //https://madole.xyz/whitelisting-mu
     }
     return requestOrigin;
  }
-app.use(cors({origin: checkOriginAgainstWhitelist, exposeHeaders: ['Total-Post','Last-Page']}))
+app.use(cors({
+    origin: checkOriginAgainstWhitelist, 
+    exposeHeaders: ['Total-Post','Last-Page', 'Set-Cookie', 'access_token'],
+    credentials: true,
+}))
 
 //body-parser 사용
 app.use(bodyParser())
