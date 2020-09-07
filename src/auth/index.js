@@ -58,7 +58,6 @@ router.post('/register', async (ctx) => {
 })
 //로그인 login: post(/auth/login)
 router.post('/login', async (ctx) => {
-	console.log(ctx.request.body)
 	const {username, password} = ctx.request.body
 	if(!username || !password){
 		console.log('no username or password')
