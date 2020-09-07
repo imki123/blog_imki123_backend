@@ -3,11 +3,9 @@ const User = require('../models/user')
 
 const cookieOptions = {
 	maxAge: 1000 * 60 * 60 * 24 * 7, //7일
-	httpOnly: true, //can't read using JS
 	secure: true, //CORS
-	signed: true,
-	overwrite: true,
 	sameSite: 'none', //CORS
+	overwrite: true,
 }
 
 const jwtMiddleware = async (ctx, next) => {

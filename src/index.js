@@ -28,6 +28,7 @@ mongoose
 	})
 
 const app = new Koa()
+app.proxy = true
 const router = new Router()
 
 //라우터 설정
@@ -43,6 +44,8 @@ update: patch(/posts/:postId)
 
 register: post(/auth/register/)
 login: post(/auth/login)
+check: get(/auth/check)
+logout: post(/auth/logout)
 
 Thanks :D
 `
@@ -64,7 +67,8 @@ function checkOriginAgainstWhitelist(ctx) {
 app.use(
 	cors({
 		origin: checkOriginAgainstWhitelist,
-		exposeHeaders: ['Total-Post', 'Last-Page', 'Set-Cookie', 'access_token'],
+		exposeHeaders: ['Total-Post', 'Last-Page'],
+		allowHeaders: ['X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
 		credentials: true,
 	}),
 )

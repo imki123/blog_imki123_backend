@@ -15,11 +15,9 @@ const router = new Router()
 
 const cookieOptions = {
 	maxAge: 1000*60*60*24*7, //7일
-	httpOnly: true, //can't read using JS
 	secure: true, //CORS
-	signed: true,
+	sameSite: 'none', //CORS
 	overwrite: true,
-	sameSite: 'none' //CORS
 };
 
 router.post('/register', async (ctx) => {
@@ -60,8 +58,10 @@ router.post('/register', async (ctx) => {
 })
 //로그인 login: post(/auth/login)
 router.post('/login', async (ctx) => {
+	console.log(ctx.request.body)
 	const {username, password} = ctx.request.body
 	if(!username || !password){
+		console.log('no username or password')
 		ctx.status = 401 //Unauthorized
 		return
 	}
@@ -69,11 +69,13 @@ router.post('/login', async (ctx) => {
 	try {
 		const user = await User.findByUsername(username)
 		if(!user){
+			console.log('discorrect username')
 			ctx.status = 401
 			return
 		}
 		const valid = await user.checkPassword(password)
 		if(!valid){
+			console.log('discorrect password')
 			ctx.status = 401
 			return
 		}
@@ -81,7 +83,9 @@ router.post('/login', async (ctx) => {
 
 		//토큰 발급
 		const token = user.generateToken()
+		console.log('protocol:', ctx.request.protocol)
 		ctx.cookies.set('access_token', token, cookieOptions)
+		
 	} catch (e) {
 		ctx.throw(500, e)
 	}
