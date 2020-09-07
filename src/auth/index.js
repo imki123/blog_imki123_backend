@@ -12,6 +12,16 @@ const router = new Router()
 // 라우터 설정
 
 //유저 등록 register: post(/auth/register/)
+
+const cookieOptions = {
+	maxAge: 1000*60*60*24*7, //7일
+	httpOnly: true, //can't read using JS
+	secure: true, //CORS
+	signed: true,
+	overwrite: true,
+	sameSite: 'none' //CORS
+};
+
 router.post('/register', async (ctx) => {
     const schema = Joi.object().keys({
 		//객체가 다음 필드를 가지고 있음을 검증
@@ -43,10 +53,7 @@ router.post('/register', async (ctx) => {
 
 		//토큰 발급
 		const token = user.generateToken()
-		ctx.cookies.set('access_token', token, {
-			maxAge: 1000*60*60*24*7, //7일
-			httpOnly: true, //can't read using JS
-		})
+		ctx.cookies.set('access_token', token, cookieOptions)
 	} catch (e) {
 		ctx.throw(500, e)
 	}
@@ -74,10 +81,7 @@ router.post('/login', async (ctx) => {
 
 		//토큰 발급
 		const token = user.generateToken()
-		ctx.cookies.set('access_token', token, {
-			maxAge: 1000*60*60*24*7, //7일
-			httpOnly: true, //can't read using JS
-		})
+		ctx.cookies.set('access_token', token, cookieOptions)
 	} catch (e) {
 		ctx.throw(500, e)
 	}
@@ -93,7 +97,7 @@ router.get('/check', async (ctx) => {
 })
 //logout: post(/auth/logout)
 router.post('/logout', async (ctx) => {
-	ctx.cookies.set('access_token')
+	ctx.cookies.set('access_token','',cookieOptions)
 	ctx.status = 204 //No Content
 })
 
