@@ -135,8 +135,7 @@ router.delete('/withdraw', async (ctx) => {
 		const user = await User.findByUsername(username)
 		if(!user){
 			console.log('No Username')
-			ctx.status = 401
-			ctx.body = 'No Username'
+			ctx.status = 204
 			return
 		}
 		//비밀번호 검사
@@ -153,7 +152,7 @@ router.delete('/withdraw', async (ctx) => {
 
 		//토큰 삭제
 		ctx.cookies.set('access_token','',cookieOptions)
-		ctx.status = 204 //No Content
+		ctx.status = 200 //No Content
 		
 	} catch (e) {
 		ctx.throw(500, e)

@@ -8,15 +8,19 @@ let cookieOptions = {
 	overwrite: true,
 }
 
-const jwtMiddleware = async (ctx, next) => {
-	//http통신이면 secure: false로 변경
+//http통신이면 secure: false로 변경
+function setCookieSecureFalse(cookieOptions, ctx){
 	if(ctx.request.protocol !== 'https'){
-		console.log('secure: false')
 		cookieOptions = {
 			...cookieOptions,
 			secure: false
 		}
 	}
+}
+
+const jwtMiddleware = async (ctx, next) => {
+	//http통신이면 secure: false로 변경
+	setCookieSecureFalse(cookieOptions, ctx)
 
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
