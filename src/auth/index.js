@@ -60,7 +60,7 @@ router.post('/register', async (ctx) => {
 router.post('/login', async (ctx) => {
 	const {username, password} = ctx.request.body
 	if(!username || !password){
-		console.log('no username or password')
+		console.log('No username or password')
 		ctx.status = 401 //Unauthorized
 		return
 	}
@@ -68,13 +68,11 @@ router.post('/login', async (ctx) => {
 	try {
 		const user = await User.findByUsername(username)
 		if(!user){
-			console.log('discorrect username')
 			ctx.status = 401
 			return
 		}
 		const valid = await user.checkPassword(password)
 		if(!valid){
-			console.log('discorrect password')
 			ctx.status = 401
 			return
 		}
