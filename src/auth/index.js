@@ -91,7 +91,7 @@ router.post('/login', async (ctx) => {
 router.get('/check', async (ctx) => {
 	const {user} = ctx.state
 	if(!user){ //로그인 중 아님
-		ctx.status = 401 //Unauthorized
+		ctx.status = 204 //No Content
 		return
 	}
 	ctx.body = user
