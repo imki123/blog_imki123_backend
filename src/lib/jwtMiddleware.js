@@ -24,10 +24,8 @@ const jwtMiddleware = async (ctx, next) => {
 
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
-	if (!token) {
-		console.log('NO TOKEN')
-		return next() //토큰이 없음
-	}
+	if (!token) return next() //토큰이 없음
+	
 	try { //토큰을 디코드해서 state.user에 저장
 		const decoded = jwt.verify(token, process.env.JWT_SECRET)
 		ctx.state.user = {
