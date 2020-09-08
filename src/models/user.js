@@ -32,6 +32,10 @@ UserSchema.methods.generateToken = function(){ //토큰 발급하기
     })
     return token
 }
+UserSchema.methods.deleteByUsername = function(username){ //유저네임으로 회원탈퇴하기
+    return this.deleteOne({username})
+}
+
 //스태틱 메서드
 UserSchema.statics.findByUsername = async function(username){
     return this.findOne({username})

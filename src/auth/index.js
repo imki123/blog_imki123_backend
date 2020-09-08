@@ -13,12 +13,22 @@ const router = new Router()
 
 //유저 등록 register: post(/auth/register/)
 
-const cookieOptions = {
+let cookieOptions = {
 	maxAge: 1000*60*60*24*7, //7일
 	secure: true, //CORS
 	sameSite: 'none', //CORS
 	overwrite: true,
 };
+
+//http통신이면 secure: false로 변경
+function setCookieSecureFalse(cookieOptions, ctx){
+	if(ctx.request.protocol !== 'https'){
+		cookieOptions = {
+			...cookieOptions,
+			secure: false
+		}
+	}
+}
 
 router.post('/register', async (ctx) => {
     const schema = Joi.object().keys({
@@ -51,6 +61,10 @@ router.post('/register', async (ctx) => {
 
 		//토큰 발급
 		const token = user.generateToken()
+
+		//http통신이면 secure: false로 변경
+		setCookieSecureFalse(cookieOptions, ctx)
+
 		ctx.cookies.set('access_token', token, cookieOptions)
 	} catch (e) {
 		ctx.throw(500, e)
@@ -80,7 +94,10 @@ router.post('/login', async (ctx) => {
 
 		//토큰 발급
 		const token = user.generateToken()
-		console.log('protocol:', ctx.request.protocol)
+
+		//http통신이면 secure: false로 변경
+		setCookieSecureFalse(cookieOptions, ctx)
+
 		ctx.cookies.set('access_token', token, cookieOptions)
 		
 	} catch (e) {
@@ -98,8 +115,49 @@ router.get('/check', async (ctx) => {
 })
 //logout: post(/auth/logout)
 router.post('/logout', async (ctx) => {
+	//http통신이면 secure: false로 변경
+	setCookieSecureFalse(cookieOptions, ctx)
+
 	ctx.cookies.set('access_token','',cookieOptions)
 	ctx.status = 204 //No Content
+})
+//withdraw: delete(/auth/withdraw) 회원탈퇴
+router.delete('/withdraw', async (ctx) => {
+    const {username, password} = ctx.request.body
+	if(!username || !password){
+		console.log('No username or password')
+		ctx.status = 401 //Unauthorized
+		return
+	}
+
+	try {
+		//아이디 검사, 유저 다큐먼트 생성
+		const user = await User.findByUsername(username)
+		if(!user){
+			console.log('No Username')
+			ctx.status = 401
+			ctx.body = 'No Username'
+			return
+		}
+		//비밀번호 검사
+		const valid = await user.checkPassword(password)
+		if(!valid){
+			ctx.status = 401
+			return
+		}
+		//아이디 삭제
+		user.deleteByUsername(username)
+
+		//http통신이면 secure: false로 변경
+		setCookieSecureFalse(cookieOptions, ctx)
+
+		//토큰 삭제
+		ctx.cookies.set('access_token','',cookieOptions)
+		ctx.status = 204 //No Content
+		
+	} catch (e) {
+		ctx.throw(500, e)
+	}
 })
 
 module.exports = router
