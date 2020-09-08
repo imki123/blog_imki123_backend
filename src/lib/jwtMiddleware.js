@@ -50,7 +50,7 @@ const jwtMiddleware = async (ctx, next) => {
 				ctx.cookies.set('access_token', token, cookieOptions)
 			}
 	
-			console.log(decoded)
+			//console.log(decoded)
 			return next()
 		}
 	} catch (e) {
