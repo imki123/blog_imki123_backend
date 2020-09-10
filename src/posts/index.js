@@ -17,18 +17,19 @@ const router = new Router()
 // 라우터 설정
 
 //포스트 작성 post
-router.post('/', checkLogin, async (ctx) => {
+router.post('/', async (ctx) => {
 	const schema = Joi.object().keys({
 		//객체가 다음 필드를 가지고 있음을 검증
 		postId: Joi.number(),
 		title: Joi.string().required(), //required가 있으면 필수항목
-		body: Joi.string().required(),
+		body: Joi.any().required(),
 		tags: Joi.array()
 			.items(Joi.string())
 			.required(),
 	})
 	const result = schema.validate(ctx.request.body)
 	if(result.error){
+		console.log('Joi validation fail.',result.error)
 		ctx.status = 400 //Bad Request
 		ctx.body = result.error
 		return
@@ -82,6 +83,7 @@ router.get('/:tag', async (ctx) => {
 		ctx.set('Last-Page', Math.ceil(postCount / 5))
 		if (post) {
 			ctx.body = post
+			console.log(post)
 		} else {
 			ctx.status = 404 //Not found
 			return
@@ -115,7 +117,7 @@ router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx)
 		const { postId } = ctx.params
 		const post = await Post.findOneAndRemove({ postId: postId })
 		if (post) {
-			ctx.body = `${post} was deleted.`
+			ctx.body = post
 		} else {
 			ctx.status = 204 //No content
 			return
@@ -125,16 +127,20 @@ router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx)
 	}
 })
 //특정 포스트 수정 update
-router.patch('/:postId', checkLogin, getPostByPostId, checkOwnPost, async ctx => {
+//router.patch('/:postId', checkLogin, getPostByPostId, checkOwnPost, async ctx => {
+router.patch('/:postId', async ctx => {	
 	try {
 		const { postId } = ctx.params
 		const post = await Post.findOneAndUpdate(
 			{ postId: postId },
-			ctx.request.body,
+			{
+				...ctx.request.body,
+				user: ctx.state.user
+			},
 			{new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
 		)
 		if (post) {
-			ctx.body = `${post} was updated.`
+			ctx.body = post
 		} else {
 			ctx.status = 204 //No content
 			return

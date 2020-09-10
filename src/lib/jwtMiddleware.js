@@ -15,16 +15,21 @@ function setCookieSecureFalse(cookieOptions, ctx){
 			...cookieOptions,
 			secure: false
 		}
+		console.log('cookie.secure = false. Cannot set cookies.')
 	}
+	return cookieOptions
 }
 
 const jwtMiddleware = async (ctx, next) => {
-	//http통신이면 secure: false로 변경
-	setCookieSecureFalse(cookieOptions, ctx)
-
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
-	if (!token) return next() //토큰이 없음
+	if (!token){
+		console.log('NO TOKEN')
+		return next() //토큰이 없음
+	} 
+
+	//http통신이면 secure: false로 변경
+	cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 	
 	try { //토큰을 디코드해서 state.user에 저장
 		const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -50,7 +55,7 @@ const jwtMiddleware = async (ctx, next) => {
 				ctx.cookies.set('access_token', token, cookieOptions)
 			}
 	
-			//console.log(decoded)
+			console.log(decoded)
 			return next()
 		}
 	} catch (e) {

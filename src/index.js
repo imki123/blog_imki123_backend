@@ -67,8 +67,10 @@ function checkOriginAgainstWhitelist(ctx) {
 app.use(
 	cors({
 		origin: checkOriginAgainstWhitelist,
+		allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 		exposeHeaders: ['Total-Post', 'Last-Page'],
-		allowHeaders: ['X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
+		allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 
+			'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
 		credentials: true,
 	}),
 )

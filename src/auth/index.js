@@ -27,7 +27,9 @@ function setCookieSecureFalse(cookieOptions, ctx){
 			...cookieOptions,
 			secure: false
 		}
+		console.log('cookie.secure = false. Cannot set cookies.')
 	}
+	return cookieOptions
 }
 
 router.post('/register', async (ctx) => {
@@ -63,7 +65,7 @@ router.post('/register', async (ctx) => {
 		const token = user.generateToken()
 
 		//http통신이면 secure: false로 변경
-		setCookieSecureFalse(cookieOptions, ctx)
+		cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
 		ctx.cookies.set('access_token', token, cookieOptions)
 	} catch (e) {
@@ -96,7 +98,7 @@ router.post('/login', async (ctx) => {
 		const token = user.generateToken()
 
 		//http통신이면 secure: false로 변경
-		setCookieSecureFalse(cookieOptions, ctx)
+		cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
 		ctx.cookies.set('access_token', token, cookieOptions)
 		
@@ -116,7 +118,7 @@ router.get('/check', async (ctx) => {
 //logout: post(/auth/logout)
 router.post('/logout', async (ctx) => {
 	//http통신이면 secure: false로 변경
-	setCookieSecureFalse(cookieOptions, ctx)
+	cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
 	ctx.cookies.set('access_token','',cookieOptions)
 	ctx.status = 204 //No Content
@@ -148,7 +150,7 @@ router.delete('/withdraw', async (ctx) => {
 		user.deleteByUsername(username)
 
 		//http통신이면 secure: false로 변경
-		setCookieSecureFalse(cookieOptions, ctx)
+		cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
 		//토큰 삭제
 		ctx.cookies.set('access_token','',cookieOptions)
