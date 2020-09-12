@@ -111,8 +111,9 @@ const getPostByPostId = async (ctx, next) => {
 }
 router.get('/id/:postId', getPostByPostId)
 
-//특정 포스트 삭제 delete
-router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
+//특정 포스트 삭제 delete : delete(/posts/:postId)
+//router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
+router.delete('/:postId', async (ctx) => {
 	try {
 		const { postId } = ctx.params
 		const post = await Post.findOneAndRemove({ postId: postId })
