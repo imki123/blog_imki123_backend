@@ -83,7 +83,6 @@ router.get('/:tag', async (ctx) => {
 		ctx.set('Last-Page', Math.ceil(postCount / 5))
 		if (post) {
 			ctx.body = post
-			console.log(post)
 		} else {
 			ctx.status = 404 //Not found
 			return

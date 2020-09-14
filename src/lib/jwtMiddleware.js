@@ -24,7 +24,7 @@ const jwtMiddleware = async (ctx, next) => {
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
 	if (!token){
-		console.log('NO TOKEN')
+		//console.log('NO TOKEN')
 		return next() //토큰이 없음
 	} 
 
@@ -55,7 +55,7 @@ const jwtMiddleware = async (ctx, next) => {
 				ctx.cookies.set('access_token', token, cookieOptions)
 			}
 	
-			console.log(decoded)
+			//console.log(decoded)
 			return next()
 		}
 	} catch (e) {
