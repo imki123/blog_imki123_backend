@@ -8,11 +8,11 @@ const jwtMiddleware = require('./lib/jwtMiddleware')
 
 const posts = require('./posts')
 const auth = require('./auth')
+const comments = require('./comments')
 
 const { PORT, MONGO_URI } = process.env
 
 //mongoDB 연결
-
 mongoose
 	.set('returnOriginal', false)
 	.connect(MONGO_URI, {
@@ -47,12 +47,18 @@ login: post(/auth/login)
 check: get(/auth/check)
 logout: post(/auth/logout)
 
+
+post: patch(/comments/:postId)
+update: patch(/comments/:postId/:commentsId)
+delete: delete(/comments/:postId/:commentsId)
+
 Thanks :D
 `
 })
 
 router.use('/posts', posts.routes()) //posts 라우트 적용
 router.use('/auth', auth.routes()) //auth 라우트 적용
+router.use('/comments', comments.routes()) //comments 라우트 적용
 
 //cors 정책 적용
 const whitelist = ['http://localhost:3000', 'https://imki123.github.io']
@@ -93,4 +99,4 @@ app.listen(port, () => {
 const http = require('http')
 setInterval(function () {
 	http.get('http://blog-imki123-backend.herokuapp.com')
-}, 600000)
+}, 600000) //10분

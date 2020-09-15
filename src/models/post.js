@@ -14,9 +14,17 @@ const PostSchema = new Schema({
         default: Date.now //현재날짜 기본값
     },
     user:{
-        _id: mongoose.Types.ObjectId,
         username: String,
     },
+    comments:[{
+        commentId: Number,
+        username: String,
+        content: String,
+        publishedDate: {
+            type: Date,
+            default: Date.now //현재날짜 기본값
+        }
+    }],
 })
 
 const Post = mongoose.model('Post', PostSchema)
