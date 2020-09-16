@@ -4,8 +4,8 @@ const Joi = require('joi')
 const router = new Router()
 
 /* post: patch(/comments/:postId)
-update: patch(/comments/:postId/:commentsId)
-delete: delete(/comments/:postId/:commentsId) */
+update: patch(/comments/:postId/:commentId)
+delete: delete(/comments/:postId/:commentId) */
 
 // 댓글 추가 post: patch(/comments/:postId)
 router.patch('/:postId', async ctx => {	
@@ -14,7 +14,6 @@ router.patch('/:postId', async ctx => {
 
         const post = await Post.findOne({ postId: postId })
 		if (post) {
-            console.log(post)
             const comments = post.comments
             let commentId = 1
             if(comments.length > 0){
@@ -43,5 +42,28 @@ router.patch('/:postId', async ctx => {
 		ctx.throw(500, e)
 	}
 })
+//특정 포스트의 특정 댓글삭제 delete: delete(/comments/:postId/:commentId)
+    router.patch('/:postId/:commentId', async (ctx) => {
+        try {
+            const { postId, commentId } = ctx.params
+            const post = await Post.findOne({ postId: postId })
+            if (post) {
+                let comments = post.comments
+                comments = comments.filter(i => i.commentId !== Number(commentId))
+                const updated = await Post.findOneAndUpdate({ postId: postId },
+                    {
+                        comments: comments, 
+                    },
+                    {new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
+                )
+                ctx.body = updated
+            } else {
+                ctx.status = 204 //No content
+                return
+            }
+        } catch (e) {
+            ctx.throw(500, e)
+        }
+    })
 
 module.exports = router
