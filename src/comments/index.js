@@ -5,7 +5,7 @@ const router = new Router()
 
 /* post: patch(/comments/:postId)
 update: patch(/comments/:postId/:commentId)
-delete: delete(/comments/:postId/:commentId) */
+delete: patch(/comments/delete/:postId/:commentId) */
 
 // 댓글 추가 post: patch(/comments/:postId)
 router.patch('/:postId', async ctx => {	
@@ -22,8 +22,8 @@ router.patch('/:postId', async ctx => {
 
             comments.push({ //추가할 댓글 정보 (commendId, username, content, publishedDate)
                 commentId: commentId, 
-                //username: ctx.state.user.username,
-                username: ctx.request.body.username,
+                username: ctx.state.user.username,
+                //username: ctx.request.body.username,
                 content: ctx.request.body.content,
                 publishedDate: Date.now,
             })
@@ -42,8 +42,8 @@ router.patch('/:postId', async ctx => {
 		ctx.throw(500, e)
 	}
 })
-//특정 포스트의 특정 댓글삭제 delete: delete(/comments/:postId/:commentId)
-    router.patch('/:postId/:commentId', async (ctx) => {
+//특정 포스트의 특정 댓글삭제 delete: patch(/comments/:postId/:commentId)
+    router.patch('/delete/:postId/:commentId', async (ctx) => {
         try {
             const { postId, commentId } = ctx.params
             const post = await Post.findOne({ postId: postId })
