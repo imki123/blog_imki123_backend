@@ -52,6 +52,8 @@ router.patch('/:postId/:commentId', async (ctx) => {
             for(let i of comments){
                 if(i.commentId === Number(commentId)){
                     i.content = ctx.request.body.content
+                    i.publishedDate = Date.new
+                    i.updated = true
                 }
             }
             const updated = await Post.findOneAndUpdate({ postId: postId },

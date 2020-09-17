@@ -1,3 +1,4 @@
+const { boolean, bool } = require('joi')
 const mongoose = require('mongoose')
 
 const {Schema} = mongoose
@@ -23,6 +24,10 @@ const PostSchema = new Schema({
         publishedDate: {
             type: Date,
             default: Date.now //현재날짜 기본값
+        },
+        updated:{
+            type: Boolean,
+            default: false
         }
     }],
 })
