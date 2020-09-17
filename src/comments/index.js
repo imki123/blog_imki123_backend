@@ -42,28 +42,55 @@ router.patch('/:postId', async ctx => {
 		ctx.throw(500, e)
 	}
 })
-//특정 포스트의 특정 댓글삭제 delete: patch(/comments/:postId/:commentId)
-    router.patch('/delete/:postId/:commentId', async (ctx) => {
-        try {
-            const { postId, commentId } = ctx.params
-            const post = await Post.findOne({ postId: postId })
-            if (post) {
-                let comments = post.comments
-                comments = comments.filter(i => i.commentId !== Number(commentId))
-                const updated = await Post.findOneAndUpdate({ postId: postId },
-                    {
-                        comments: comments, 
-                    },
-                    {new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
-                )
-                ctx.body = updated
-            } else {
-                ctx.status = 204 //No content
-                return
+//특정 포스트의 특정 댓글수정 update: patch(/comments/:postId/:commentId)
+router.patch('/:postId/:commentId', async (ctx) => {
+    try {
+        const { postId, commentId } = ctx.params
+        const post = await Post.findOne({ postId: postId })
+        if (post) {
+            let comments = post.comments
+            for(let i of comments){
+                if(i.commentId === Number(commentId)){
+                    i.content = ctx.request.body.content
+                }
             }
-        } catch (e) {
-            ctx.throw(500, e)
+            const updated = await Post.findOneAndUpdate({ postId: postId },
+                {
+                    comments: comments, 
+                },
+                {new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
+            )
+            ctx.body = updated
+        } else {
+            ctx.status = 204 //No content
+            return
         }
-    })
+    } catch (e) {
+        ctx.throw(500, e)
+    }
+})
+//특정 포스트의 특정 댓글삭제 delete: patch(/comments/delete/:postId/:commentId)
+router.patch('/delete/:postId/:commentId', async (ctx) => {
+    try {
+        const { postId, commentId } = ctx.params
+        const post = await Post.findOne({ postId: postId })
+        if (post) {
+            let comments = post.comments
+            comments = comments.filter(i => i.commentId !== Number(commentId))
+            const updated = await Post.findOneAndUpdate({ postId: postId },
+                {
+                    comments: comments, 
+                },
+                {new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
+            )
+            ctx.body = updated
+        } else {
+            ctx.status = 204 //No content
+            return
+        }
+    } catch (e) {
+        ctx.throw(500, e)
+    }
+})
 
 module.exports = router
