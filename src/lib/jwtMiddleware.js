@@ -48,7 +48,7 @@ const jwtMiddleware = async (ctx, next) => {
 				username: decoded.username,
 			}
 			//토큰의 남은 유효 기간이 3.5일 미만이면 재발급
-			const now = Math.floor(() => new Date(+new Date() + 9*60*60*1000) / 1000)
+			const now = Math.floor(new Date((new Date()).getTime() + 9*60*60*1000) / 1000)
 			if (decoded.exp - now < 60 * 60 * 24 * 3.5) {
 				const user = await User.findById(decoded._id)
 				//토큰 재발급

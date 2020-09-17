@@ -22,10 +22,9 @@ router.patch('/:postId', async ctx => {
 
             comments.push({ //추가할 댓글 정보 (commendId, username, content, publishedDate)
                 commentId: commentId, 
-                username: ctx.state.user.username,
-                //username: ctx.request.body.username, //로컬에서는 state가 protocol 차이로 정상적으로 동작이 안됨.
+                username: (ctx.state.user && ctx.state.user.username) || ctx.request.body.username, //로컬에서는 state가 protocol 차이로 정상적으로 동작이 안됨.
                 content: ctx.request.body.content,
-                publishedDate: () => new Date(+new Date() + 9*60*60*1000),
+                publishedDate: new Date((new Date()).getTime() + 9*60*60*1000),
             })
             const updated = await Post.findOneAndUpdate({ postId: postId },
                 {
@@ -52,7 +51,7 @@ router.patch('/:postId/:commentId', async (ctx) => {
             for(let i of comments){
                 if(i.commentId === Number(commentId)){
                     i.content = ctx.request.body.content
-                    i.publishedDate = () => new Date(+new Date() + 9*60*60*1000)
+                    i.publishedDate = new Date((new Date()).getTime() + 9*60*60*1000)
                     i.updated = true
                 }
             }

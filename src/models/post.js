@@ -1,4 +1,3 @@
-const { boolean, bool } = require('joi')
 const mongoose = require('mongoose')
 
 const {Schema} = mongoose
@@ -12,7 +11,7 @@ const PostSchema = new Schema({
     tags: [String],
     publishedDate: {
         type: Date,
-        default: () => new Date(+new Date() + 9*60*60*1000) //현재날짜 기본값
+        default: () => new Date((new Date()).getTime() + 9*60*60*1000) //현재날짜 기본값
     },
     user:{
         username: String,
@@ -23,7 +22,7 @@ const PostSchema = new Schema({
         content: String,
         publishedDate: {
             type: Date,
-            default: () => new Date(+new Date() + 9*60*60*1000) //현재날짜 기본값
+            default: () => new Date((new Date()).getTime() + 9*60*60*1000) //현재날짜 기본값
         },
         updated:{
             type: Boolean,

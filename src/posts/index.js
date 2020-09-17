@@ -58,7 +58,7 @@ router.post('/', async (ctx) => {
 //포스트 전체 목록 list
 router.get('/', async (ctx) => {
 	try {
-		const posts = await Post.find().sort({ publishedDate: -1 })
+		const posts = await Post.find().sort({ postId: -1 })
 		ctx.body = posts
 	} catch (e) {
 		ctx.throw(500, e)
@@ -131,12 +131,11 @@ router.delete('/:postId', async (ctx) => {
 router.patch('/:postId', async ctx => {	
 	try {
 		const { postId } = ctx.params
-		const post = await Post.findOneAndUpdate(
-			{ postId: postId },
+		const post = await Post.findOneAndUpdate({ postId: postId },
 			{
 				...ctx.request.body,
+				publishedDate: new Date((new Date()).getTime() + 9*60*60*1000),
 				user: ctx.state.user,
-				publishedDate: () => new Date(+new Date() + 9*60*60*1000),
 			},
 			{new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
 		)
