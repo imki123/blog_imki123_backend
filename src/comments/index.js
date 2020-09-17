@@ -52,7 +52,7 @@ router.patch('/:postId/:commentId', async (ctx) => {
             for(let i of comments){
                 if(i.commentId === Number(commentId)){
                     i.content = ctx.request.body.content
-                    i.publishedDate = Date.new
+                    i.publishedDate = () => new Date(+new Date() + 9*60*60*1000)
                     i.updated = true
                 }
             }
