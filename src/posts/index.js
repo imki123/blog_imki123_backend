@@ -136,7 +136,7 @@ router.patch('/:postId', async ctx => {
 			{
 				...ctx.request.body,
 				user: ctx.state.user,
-				publishedDate: Date.now,
+				publishedDate: () => new Date(+new Date() + 9*60*60*1000),
 			},
 			{new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
 		)

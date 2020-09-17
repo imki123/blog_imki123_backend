@@ -25,7 +25,7 @@ router.patch('/:postId', async ctx => {
                 username: ctx.state.user.username,
                 //username: ctx.request.body.username, //로컬에서는 state가 protocol 차이로 정상적으로 동작이 안됨.
                 content: ctx.request.body.content,
-                publishedDate: Date.now,
+                publishedDate: () => new Date(+new Date() + 9*60*60*1000),
             })
             const updated = await Post.findOneAndUpdate({ postId: postId },
                 {

@@ -12,7 +12,7 @@ const PostSchema = new Schema({
     tags: [String],
     publishedDate: {
         type: Date,
-        default: Date.now //현재날짜 기본값
+        default: () => new Date(+new Date() + 9*60*60*1000) //현재날짜 기본값
     },
     user:{
         username: String,
@@ -23,7 +23,7 @@ const PostSchema = new Schema({
         content: String,
         publishedDate: {
             type: Date,
-            default: Date.now //현재날짜 기본값
+            default: () => new Date(+new Date() + 9*60*60*1000) //현재날짜 기본값
         },
         updated:{
             type: Boolean,
