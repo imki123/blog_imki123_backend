@@ -6,6 +6,7 @@ let cookieOptions = {
 	secure: true, //CORS
 	sameSite: 'none', //CORS
 	overwrite: true,
+	httpOnly: true,
 }
 
 //http통신이면 secure: false로 변경
@@ -24,7 +25,7 @@ const jwtMiddleware = async (ctx, next) => {
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
 	if (!token){
-		//console.log('NO TOKEN')
+		console.log('[Auth] NO TOKEN')
 		return next() //토큰이 없음
 	} 
 
@@ -55,12 +56,12 @@ const jwtMiddleware = async (ctx, next) => {
 				ctx.cookies.set('access_token', token, cookieOptions)
 			}
 	
-			//console.log(decoded)
+			console.log('[Auth]',decoded.username)
 			return next()
 		}
 	} catch (e) {
 		//토큰 검증 실패
-		console.log('jwt verify fail:', e)
+		console.log('[Auth] fail:', e)
 		return next()
 	}
 }

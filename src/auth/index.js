@@ -18,6 +18,7 @@ let cookieOptions = {
 	secure: true, //CORS
 	sameSite: 'none', //CORS
 	overwrite: true,
+	httpOnly: true,
 };
 
 //http통신이면 secure: false로 변경

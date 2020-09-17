@@ -23,7 +23,7 @@ router.patch('/:postId', async ctx => {
             comments.push({ //추가할 댓글 정보 (commendId, username, content, publishedDate)
                 commentId: commentId, 
                 username: ctx.state.user.username,
-                //username: ctx.request.body.username,
+                //username: ctx.request.body.username, //로컬에서는 state가 protocol 차이로 정상적으로 동작이 안됨.
                 content: ctx.request.body.content,
                 publishedDate: Date.now,
             })
