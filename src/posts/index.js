@@ -75,7 +75,7 @@ router.get('/:tag', async (ctx) => {
 	try {
 		const { tag } = ctx.params
 		const post = await Post.find({ tags: tag })
-			.sort({ publishedDate: -1 }) //역순
+			.sort({ postId: -1 }) //역순
 			.limit(5) //5건씩 불러옴
 			.skip((page - 1) * 5) //5건마다 페이지 스킵
         const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
@@ -135,7 +135,8 @@ router.patch('/:postId', async ctx => {
 			{ postId: postId },
 			{
 				...ctx.request.body,
-				user: ctx.state.user
+				user: ctx.state.user,
+				publishedDate: Date.now,
 			},
 			{new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
 		)
