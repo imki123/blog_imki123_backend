@@ -9,9 +9,6 @@ const router = new Router()
     check: get(/auth/check)
     logout: post(/auth/logout)
 */
-// 라우터 설정
-
-//유저 등록 register: post(/auth/register/)
 
 let cookieOptions = {
 	maxAge: 1000*60*60*24*7, //7일
@@ -33,10 +30,12 @@ function setCookieSecureFalse(cookieOptions, ctx){
 	return cookieOptions
 }
 
+// 라우터 설정
+// 유저 등록 register: post(/auth/register/)
 router.post('/register', async (ctx) => {
     const schema = Joi.object().keys({
 		//객체가 다음 필드를 가지고 있음을 검증
-        username: Joi.string().alphanum().min(3).max(20).required(), //required가 있으면 필수항목
+        username: Joi.string().min(3).max(20).required(), //required가 있으면 필수항목
 		password: Joi.string().required(),
 	})
 	const result = schema.validate(ctx.request.body)
