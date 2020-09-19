@@ -24,7 +24,7 @@ function setCookieSecureFalse(cookieOptions, ctx){
 const jwtMiddleware = async (ctx, next) => {
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
-	if (!token){
+	if (token === undefined || token === ''){
 		console.log('[Auth] NO TOKEN')
 		return next() //토큰이 없음
 	} 

@@ -21,10 +21,10 @@ mongoose
 		useUnifiedTopology: true,
 	})
 	.then(() => {
-		console.log('Connected to MongoDB')
+		console.log('Connected to MongoDB.')
 	})
 	.catch((e) => {
-		console.error(e)
+		console.error('Cannot connect to MongoDB. Check MONGO_URI.',e)
 	})
 
 const app = new Koa()
