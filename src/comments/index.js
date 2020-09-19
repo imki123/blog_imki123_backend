@@ -12,18 +12,18 @@ router.patch('/:postId', async ctx => {
 	try {
         const { postId } = ctx.params
 
-        const post = await Post.findOne({ postId: postId })
+        const post = await Post.findOne({ postId: Number(postId) })
 		if (post) {
             const comments = post.comments
             let commentId = 1
-            if(comments.length > 0){
+            if(comments && comments.length > 0){
                 commentId = comments[comments.length-1].commentId + 1 //commentId가 있으면 +1하고 없으면 1
             }
 
             comments.push({ //추가할 댓글 정보 (commendId, username, content, publishedDate)
                 commentId: commentId, 
-                username: (ctx.state.user && ctx.state.user.username) || ctx.request.body.username, //로컬에서는 state가 protocol 차이로 정상적으로 동작이 안됨.
-                content: ctx.request.body.content,
+                username: (ctx.state.user && ctx.state.user.username) || ctx.request.body.data.username, //로컬에서는 state가 protocol 차이로 정상적으로 동작이 안됨.
+                content: ctx.request.body.data.content,
                 publishedDate: new Date((new Date()).getTime() + 9*60*60*1000),
             })
             const updated = await Post.findOneAndUpdate({ postId: postId },
@@ -50,7 +50,7 @@ router.patch('/:postId/:commentId', async (ctx) => {
             let comments = post.comments
             for(let i of comments){
                 if(i.commentId === Number(commentId)){
-                    i.content = ctx.request.body.content
+                    i.content = ctx.request.body.data.content //axios의 data
                     i.publishedDate = new Date((new Date()).getTime() + 9*60*60*1000)
                     i.updated = true
                 }
