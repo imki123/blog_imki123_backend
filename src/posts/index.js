@@ -88,7 +88,7 @@ router.get('/menus', async (ctx) => {
 				}
 			}
 		}
-		console.log(mainMenus,subMenus)
+		subMenus.sort()
 
 		ctx.body = {
 			mainMenus: mainMenus,
