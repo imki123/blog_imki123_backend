@@ -82,7 +82,9 @@ app.use(
 )
 
 //body-parser 사용
-app.use(bodyParser())
+app.use(bodyParser({
+	jsonLimit: '10mb', //default: 1mb
+}))
 //jwtMiddleware 적용
 app.use(jwtMiddleware)
 
