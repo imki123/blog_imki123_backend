@@ -37,6 +37,7 @@ router.get('/', (ctx) => {
 
 post: post(/posts/)
 list: get(/posts/)
+menus: get(/posts/menus)
 tag list: get(/posts/:tags)
 read: get(/posts/id/:postId)
 delete: delete(/posts/:postId)

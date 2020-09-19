@@ -7,7 +7,8 @@ const checkOwnPost = require('../lib/checkOwnPost')
 const router = new Router()
 
 /* posts 종류 : 
-    post: post(/posts/)
+	post: post(/posts/)
+	menus: get(/posts/menus)
 	list: get(/posts/)
 	tag list: get(/posts/:tags)
 	read: get(/posts/id/:postId)
@@ -51,6 +52,48 @@ router.post('/', async (ctx) => {
 	try {
 		await post.save()
 		ctx.body = post
+	} catch (e) {
+		ctx.throw(500, e)
+	}
+})
+//포스트 메뉴 목록 list /posts/menus
+router.get('/menus', async (ctx) => {
+	try {
+		const posts = await Post.find()
+		const mainMenus = {}
+		const subMenus = []
+		if(posts){
+			for(let post of posts){ //포스트의 태그정보를 menus에 저장
+				let i=0
+				for(let tag of post.tags){
+					if(i===0){ //첫번째 태그는 대메뉴로 사용
+						if(!mainMenus[tag]){ 
+							mainMenus[tag] = {'cnt': 1, 'name': tag}
+						}else{
+							mainMenus[tag]['cnt']++
+						}
+					}else{
+						//서브메뉴 추가
+						if(!mainMenus[post.tags[0]][tag]){ 
+							mainMenus[post.tags[0]][tag] = {'cnt': 1, 'name': tag}
+						}else{
+							mainMenus[post.tags[0]][tag]['cnt']++
+						}
+						//Quill 태그 추가
+						if(subMenus.indexOf(tag) === -1){
+							subMenus.push(tag)
+						}
+					}
+					i++
+				}
+			}
+		}
+		console.log(mainMenus,subMenus)
+
+		ctx.body = {
+			mainMenus: mainMenus,
+			subMenus: subMenus,
+		}
 	} catch (e) {
 		ctx.throw(500, e)
 	}
