@@ -49,9 +49,10 @@ check: get(/auth/check)
 logout: post(/auth/logout)
 
 
+get: get(/comments/:postId)
 post: patch(/comments/:postId)
-update: patch(/comments/:postId/:commentsId)
-delete: delete(/comments/:postId/:commentsId)
+update: patch(/comments/:postId/:commentId)
+delete: delete(/comments/:postId/:commentId)
 
 Thanks :D
 `

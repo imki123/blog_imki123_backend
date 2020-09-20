@@ -1,12 +1,29 @@
 const Router = require('koa-router')
 const Post = require('../models/post')
-const Joi = require('joi')
 const router = new Router()
 
-/* post: patch(/comments/:postId)
+/* get: get(/comments/:postId)
+post: patch(/comments/:postId)
 update: patch(/comments/:postId/:commentId)
 delete: patch(/comments/delete/:postId/:commentId) */
 
+
+// 댓글 불러오기(새로고침) get: get(/comments/:postId)
+router.get('/:postId', async ctx => {	
+	try {
+        const { postId } = ctx.params
+
+        const post = await Post.findOne({ postId: Number(postId) })
+		if (post) {
+			ctx.body = post.comments
+		} else {
+			ctx.status = 204 //No content
+			return
+		}
+	} catch (e) {
+		ctx.throw(500, e)
+	}
+})
 // 댓글 추가 post: patch(/comments/:postId)
 router.patch('/:postId', async ctx => {	
 	try {

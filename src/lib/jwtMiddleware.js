@@ -25,13 +25,6 @@ const jwtMiddleware = async (ctx, next) => {
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
 	if (token === undefined || token === ''){
-		console.log('method',ctx.request.method)
-		if(ctx.request.method !== 'OPTIONS'){
-			console.log('[JWT] NO TOKEN') //https 통신에서만 토큰이 체크가 됨. 로컬에서는 확인이 안됨.
-			console.log('not opt')
-		}else{
-			console.log('opt')
-		} 
 		return next() //토큰이 없음
 	}
 	
