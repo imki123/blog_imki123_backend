@@ -25,9 +25,16 @@ const jwtMiddleware = async (ctx, next) => {
 	//토큰 있는지 체크
 	const token = ctx.cookies.get('access_token')
 	if (token === undefined || token === ''){
-		console.log('[Auth] NO TOKEN')
+		console.log('method',ctx.request.method)
+		if(ctx.request.method !== 'OPTIONS'){
+			console.log('[JWT] NO TOKEN') //https 통신에서만 토큰이 체크가 됨. 로컬에서는 확인이 안됨.
+			console.log('not opt')
+		}else{
+			console.log('opt')
+		} 
 		return next() //토큰이 없음
-	} 
+	}
+	
 
 	//http통신이면 secure: false로 변경
 	cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
@@ -56,12 +63,12 @@ const jwtMiddleware = async (ctx, next) => {
 				ctx.cookies.set('access_token', token, cookieOptions)
 			}
 	
-			console.log('[Auth]',decoded.username)
+			console.log('[JWT]',decoded.username)
 			return next()
 		}
 	} catch (e) {
 		//토큰 검증 실패
-		console.log('[Auth] fail:', e)
+		console.log('[JWT] fail:', e)
 		return next()
 	}
 }
