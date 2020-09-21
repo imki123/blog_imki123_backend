@@ -5,10 +5,10 @@ const mongoose = require('mongoose')
 const bodyParser = require('koa-bodyparser')
 const cors = require('@koa/cors')
 const jwtMiddleware = require('./lib/jwtMiddleware')
-
 const posts = require('./posts')
 const auth = require('./auth')
 const comments = require('./comments')
+const catbook = require('./catbook')
 
 const { PORT, MONGO_URI } = process.env
 
@@ -24,7 +24,7 @@ mongoose
 		console.log('Connected to MongoDB.')
 	})
 	.catch((e) => {
-		console.error('Cannot connect to MongoDB. Check MONGO_URI.',e)
+		console.error('Cannot connect to MongoDB. Check MONGO_URI.', e)
 	})
 
 const app = new Koa()
@@ -61,6 +61,7 @@ Thanks :D
 router.use('/posts', posts.routes()) //posts 라우트 적용
 router.use('/auth', auth.routes()) //auth 라우트 적용
 router.use('/comments', comments.routes()) //comments 라우트 적용
+router.use('/catbook', catbook.routes()) //catbook 라우트 적용
 
 //cors 정책 적용
 const whitelist = ['http://localhost:3000', 'https://imki123.github.io']
@@ -77,16 +78,17 @@ app.use(
 		origin: checkOriginAgainstWhitelist,
 		allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 		exposeHeaders: ['Total-Post', 'Last-Page'],
-		allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 
-			'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
+		allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
 		credentials: true,
 	}),
 )
 
 //body-parser 사용
-app.use(bodyParser({
-	jsonLimit: '10mb', //default: 1mb
-}))
+app.use(
+	bodyParser({
+		jsonLimit: '10mb', //default: 1mb
+	}),
+)
 //jwtMiddleware 적용
 app.use(jwtMiddleware)
 
