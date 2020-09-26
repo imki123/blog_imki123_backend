@@ -24,13 +24,12 @@ router.post('/', async (ctx) => {
 		postId: Joi.number(),
 		title: Joi.string().required(), //required가 있으면 필수항목
 		body: Joi.any().required(),
-		tags: Joi.array()
-			.items(Joi.string())
-			.required(),
+		text: Joi.string(),
+		tags: Joi.array().items(Joi.string()).required(),
 	})
 	const result = schema.validate(ctx.request.body)
-	if(result.error){
-		console.log('Joi validation fail.',result.error)
+	if (result.error) {
+		console.log('Joi validation fail.', result.error)
 		ctx.status = 400 //Bad Request
 		ctx.body = result.error
 		return
@@ -41,11 +40,12 @@ router.post('/', async (ctx) => {
 	if (posts.length > 0) {
 		postId = posts[posts.length - 1].postId + 1
 	}
-	const { title, body, tags } = ctx.request.body
+	const { title, body, tags, text } = ctx.request.body
 	const post = new Post({
 		postId,
 		title,
 		body,
+		text,
 		tags,
 		user: ctx.state.user,
 	})
@@ -62,25 +62,27 @@ router.get('/menus', async (ctx) => {
 		const posts = await Post.find()
 		const mainMenus = {}
 		const subMenus = []
-		if(posts){
-			for(let post of posts){ //포스트의 태그정보를 menus에 저장
-				let i=0
-				for(let tag of post.tags){
-					if(i===0){ //첫번째 태그는 대메뉴로 사용
-						if(!mainMenus[tag]){ 
-							mainMenus[tag] = {'cnt': 1, 'name': tag}
-						}else{
+		if (posts) {
+			for (let post of posts) {
+				//포스트의 태그정보를 menus에 저장
+				let i = 0
+				for (let tag of post.tags) {
+					if (i === 0) {
+						//첫번째 태그는 대메뉴로 사용
+						if (!mainMenus[tag]) {
+							mainMenus[tag] = { cnt: 1, name: tag }
+						} else {
 							mainMenus[tag]['cnt']++
 						}
-					}else{
+					} else {
 						//서브메뉴 추가
-						if(!mainMenus[post.tags[0]][tag]){ 
-							mainMenus[post.tags[0]][tag] = {'cnt': 1, 'name': tag}
-						}else{
+						if (!mainMenus[post.tags[0]][tag]) {
+							mainMenus[post.tags[0]][tag] = { cnt: 1, name: tag }
+						} else {
 							mainMenus[post.tags[0]][tag]['cnt']++
 						}
 						//Quill 태그 추가
-						if(subMenus.indexOf(tag) === -1){
+						if (subMenus.indexOf(tag) === -1) {
 							subMenus.push(tag)
 						}
 					}
@@ -121,8 +123,8 @@ router.get('/:tag', async (ctx) => {
 			.sort({ postId: -1 }) //역순
 			.limit(5) //5건씩 불러옴
 			.skip((page - 1) * 5) //5건마다 페이지 스킵
-        const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
-        ctx.set('Total-post', postCount)
+		const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
+		ctx.set('Total-post', postCount)
 		ctx.set('Last-Page', Math.ceil(postCount / 5))
 		if (post) {
 			ctx.body = post
@@ -171,16 +173,17 @@ router.delete('/:postId', async (ctx) => {
 })
 //특정 포스트 수정 update
 //router.patch('/:postId', checkLogin, getPostByPostId, checkOwnPost, async ctx => {
-router.patch('/:postId', async ctx => {	
+router.patch('/:postId', async (ctx) => {
 	try {
 		const { postId } = ctx.params
-		const post = await Post.findOneAndUpdate({ postId: postId },
+		const post = await Post.findOneAndUpdate(
+			{ postId: postId },
 			{
 				...ctx.request.body,
-				publishedDate: new Date((new Date()).getTime() + 9*60*60*1000),
+				publishedDate: new Date(new Date().getTime() + 9 * 60 * 60 * 1000),
 				user: ctx.state.user,
 			},
-			{new: true}, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
+			{ new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
 		)
 		if (post) {
 			ctx.body = post
