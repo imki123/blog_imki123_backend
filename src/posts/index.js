@@ -121,8 +121,8 @@ router.get('/:tag', async (ctx) => {
 		const { tag } = ctx.params
 		const posts = await Post.find({ tags: tag })
 			.sort({ postId: -1 }) //역순
-			.limit(10) //5건씩 불러옴
-			.skip((page - 1) * 10) //5건마다 페이지 스킵
+			.limit(10) //10건씩 불러옴
+			.skip((page - 1) * 10) //10건마다 페이지 스킵
 		const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
 		
 		//headers 세팅

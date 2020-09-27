@@ -64,7 +64,7 @@ router.use('/comments', comments.routes()) //comments 라우트 적용
 router.use('/catbook', catbook.routes()) //catbook 라우트 적용
 
 //cors 정책 적용
-const whitelist = ['http://localhost:3000', 'https://imki123.github.io', 'http://localhost:19006']
+const whitelist = ['http://localhost:3000', 'https://imki123.github.io', 'http://localhost:19006', 'http://localhost:45678']
 function checkOriginAgainstWhitelist(ctx) {
 	//https://madole.xyz/whitelisting-multiple-domains-with-kcors-in-koa
 	const requestOrigin = ctx.accept.headers.origin
