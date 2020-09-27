@@ -119,15 +119,30 @@ router.get('/:tag', async (ctx) => {
 
 	try {
 		const { tag } = ctx.params
-		const post = await Post.find({ tags: tag })
+		const posts = await Post.find({ tags: tag })
 			.sort({ postId: -1 }) //역순
-			.limit(5) //5건씩 불러옴
-			.skip((page - 1) * 5) //5건마다 페이지 스킵
+			.limit(10) //5건씩 불러옴
+			.skip((page - 1) * 10) //5건마다 페이지 스킵
 		const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
-		ctx.set('Total-post', postCount)
-		ctx.set('Last-Page', Math.ceil(postCount / 5))
-		if (post) {
-			ctx.body = post
+		
+		//headers 세팅
+		//ctx.set('Total-post', postCount)
+		//ctx.set('Last-Page', Math.ceil(postCount / 5))
+
+		if (posts) {
+			let list = []
+			for (let i of posts) {
+				list.push({
+					postId: i.postId,
+					title: i.title,
+					text: i.text,
+					publishedDate: i.publishedDate,
+				})
+			}
+			ctx.body = {
+				list: list,
+				postCount: postCount
+			}
 		} else {
 			ctx.status = 404 //Not found
 			return
