@@ -152,17 +152,36 @@ router.get('/tag/:tag', async (ctx) => {
 	}
 })
 //특정 포스트 조회 read
-router.get('/:postId', async (ctx, next) => {
+router.get('/:postId', async (ctx) => {
 	try {
 		const { postId } = ctx.params
-		const post = await Post.findOne({ postId: postId })
-		if (post) {
-			ctx.body = post
-			ctx.state.post = post
-			next()
-		} else {
-			ctx.status = 404 //Not found
-			return
+		if (postId === 'recents') {
+			const post = await Post.find({postId: {$gt: 1}}).sort({publishedDate: -1}).limit(5)
+			if (post) {
+				ctx.body = post
+			} else {
+				ctx.status = 404 //Not found
+				return
+			}
+		}else if(postId === 'popular'){
+			let post = await Post.find({postId: {$gt: 1}}).sort({publishedDate: -1})
+			post.sort(function(a,b){return b.comments.length - a.comments.length})
+			post.splice(5)
+			if (post) {
+				ctx.body = post
+			} else {
+				ctx.status = 404 //Not found
+				return
+			}
+		}else{
+			const post = await Post.findOne({ postId: postId })
+			if (post) {
+				ctx.body = post
+				ctx.state.post = post
+			} else {
+				ctx.status = 404 //Not found
+				return
+			}
 		}
 	} catch (e) {
 		ctx.throw(500, e)
