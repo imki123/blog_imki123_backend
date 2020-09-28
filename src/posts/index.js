@@ -110,7 +110,7 @@ router.get('/', async (ctx) => {
 	}
 })
 //특정 태그 포스트 목록 list
-router.get('/:tag', async (ctx) => {
+router.get('/tag/:tag', async (ctx) => {
 	const page = parseInt(ctx.query.page || '1', 10) //페이지를 숫자로 변환. 없다면 1
 	if (page < 1) {
 		ctx.status = 400
@@ -124,7 +124,7 @@ router.get('/:tag', async (ctx) => {
 			.limit(10) //10건씩 불러옴
 			.skip((page - 1) * 10) //10건마다 페이지 스킵
 		const postCount = await Post.countDocuments({ tags: tag }) //전체 페이지 수를 헤더에 저장
-		
+
 		//headers 세팅
 		//ctx.set('Total-post', postCount)
 		//ctx.set('Last-Page', Math.ceil(postCount / 5))
@@ -141,7 +141,7 @@ router.get('/:tag', async (ctx) => {
 			}
 			ctx.body = {
 				list: list,
-				postCount: postCount
+				postCount: postCount,
 			}
 		} else {
 			ctx.status = 404 //Not found
@@ -152,7 +152,7 @@ router.get('/:tag', async (ctx) => {
 	}
 })
 //특정 포스트 조회 read
-const getPostByPostId = async (ctx, next) => {
+router.get('/:postId', async (ctx, next) => {
 	try {
 		const { postId } = ctx.params
 		const post = await Post.findOne({ postId: postId })
@@ -167,8 +167,7 @@ const getPostByPostId = async (ctx, next) => {
 	} catch (e) {
 		ctx.throw(500, e)
 	}
-}
-router.get('/id/:postId', getPostByPostId)
+})
 
 //특정 포스트 삭제 delete : delete(/posts/:postId)
 //router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
