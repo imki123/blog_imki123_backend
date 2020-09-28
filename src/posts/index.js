@@ -156,24 +156,46 @@ router.get('/:postId', async (ctx) => {
 	try {
 		const { postId } = ctx.params
 		if (postId === 'recents') {
-			const post = await Post.find({postId: {$gt: 1}}).sort({publishedDate: -1}).limit(5)
-			if (post) {
-				ctx.body = post
+			const posts = await Post.find({ postId: { $gt: 1 } })
+				.sort({ publishedDate: -1 })
+				.limit(5)
+			if (posts) {
+				let list = []
+				for (let i of posts) {
+					list.push({
+						postId: i.postId,
+						title: i.title,
+						text: i.text,
+						publishedDate: i.publishedDate,
+					})
+				}
+				ctx.body = list
 			} else {
 				ctx.status = 404 //Not found
 				return
 			}
-		}else if(postId === 'popular'){
-			let post = await Post.find({postId: {$gt: 1}}).sort({publishedDate: -1})
-			post.sort(function(a,b){return b.comments.length - a.comments.length})
-			post.splice(5)
-			if (post) {
-				ctx.body = post
+		} else if (postId === 'popular') {
+			let posts = await Post.find({ postId: { $gt: 1 } }).sort({ publishedDate: -1 })
+			if (posts) {
+				posts.sort(function (a, b) {
+					return b.comments.length - a.comments.length
+				})
+				posts.splice(5)
+				let list = []
+				for (let i of posts) {
+					list.push({
+						postId: i.postId,
+						title: i.title,
+						text: i.text,
+						publishedDate: i.publishedDate,
+					})
+				}
+				ctx.body = list
 			} else {
 				ctx.status = 404 //Not found
 				return
 			}
-		}else{
+		} else {
 			const post = await Post.findOne({ postId: postId })
 			if (post) {
 				ctx.body = post
