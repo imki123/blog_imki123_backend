@@ -8,6 +8,8 @@ const jwtMiddleware = require('./lib/jwtMiddleware')
 const posts = require('./posts')
 const auth = require('./auth')
 const comments = require('./comments')
+const menus = require('./menus')
+
 const catbook = require('./catbook')
 
 const { PORT, MONGO_URI } = process.env
@@ -61,6 +63,7 @@ Thanks :D
 router.use('/posts', posts.routes()) //posts 라우트 적용
 router.use('/auth', auth.routes()) //auth 라우트 적용
 router.use('/comments', comments.routes()) //comments 라우트 적용
+router.use('/menus', menus.routes()) //menus 라우트 적용
 router.use('/catbook', catbook.routes()) //catbook 라우트 적용
 
 //cors 정책 적용
