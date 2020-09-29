@@ -27,10 +27,17 @@ router.get('/', async (ctx) => {
 })
 //add mainMenu: post(/menus/)
 router.post('/', async (ctx) => {
-	const { name, order, count, subMenus } = ctx.request.body
-	const menu = new Menus({
+    const { name, order, subMenus } = ctx.request.body
+    let menu = await Menus.findOne({ name: name })
+    if(menu){ //메뉴가 이미 있으면 카운트 증가하고 업데이트
+        menu.count++
+        Menus.findOneAndUpdate({ name: name }, menu, { new: true })
+        ctx.body = menu
+        return
+    }
+    //메뉴가 없으면 추가
+	menu = new Menus({
 		name,
-		count,
 		order,
 		subMenus,
 	})
