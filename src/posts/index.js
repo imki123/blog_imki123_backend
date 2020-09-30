@@ -15,6 +15,46 @@ const router = new Router()
 	update: patch(/posts/:postId)
 */
 // 라우터 설정
+/* const goBody = async (postId) => {
+	//let postBody = await PostBody.findOne({ postId: postId })
+	//let post = await Post.findOne({ postId: postId })
+	const posts = await Post.find()
+
+	for (let i of posts) {
+		postId = i.postId
+		let post = await Post.findOneAndUpdate(
+			{ postId: postId },
+			{
+				body: '',
+			},
+			{ new: true },
+		)
+		console.log(post)
+		let body = i.body
+		let postBody = await PostBody.findOne({ postId: postId })
+
+		if (i.body) {
+			if (!postBody) {
+				postBody = new PostBody({
+					postId: postId,
+					body: body,
+				})
+				postBody = await postBody.save()
+			} else {
+				postBody = await PostBody.findOneAndUpdate(
+					{ postId: postId },
+					{
+						body: body,
+					},
+					{ new: true },
+				)
+			}
+		}
+		
+		console.log(postBody) 
+	}
+} */
+//goBody(1)
 
 //포스트 작성 post
 router.post('/', async (ctx) => {
@@ -159,16 +199,7 @@ router.get('/:postId', async (ctx) => {
 				.sort({ publishedDate: -1 })
 				.limit(5)
 			if (posts) {
-				let list = []
-				for (let i of posts) {
-					list.push({
-						postId: i.postId,
-						title: i.title,
-						text: i.text,
-						publishedDate: i.publishedDate,
-					})
-				}
-				ctx.body = list
+				ctx.body = posts
 			} else {
 				ctx.status = 404 //Not found
 				return
@@ -180,16 +211,7 @@ router.get('/:postId', async (ctx) => {
 					return b.comments.length - a.comments.length
 				})
 				posts.splice(5)
-				let list = []
-				for (let i of posts) {
-					list.push({
-						postId: i.postId,
-						title: i.title,
-						text: i.text,
-						publishedDate: i.publishedDate,
-					})
-				}
-				ctx.body = list
+				ctx.body = posts
 			} else {
 				ctx.status = 404 //Not found
 				return
@@ -203,6 +225,22 @@ router.get('/:postId', async (ctx) => {
 				ctx.status = 404 //Not found
 				return
 			}
+		}
+	} catch (e) {
+		ctx.throw(500, e)
+	}
+})
+//특정 포스트바디 조회
+router.get('/postBody/:postId', async (ctx) => {
+	try {
+		const { postId } = ctx.params
+		const post = await PostBody.findOne({ postId: postId })
+		if (post) {
+			ctx.body = post
+			ctx.state.post = post
+		} else {
+			ctx.status = 404 //Not found
+			return
 		}
 	} catch (e) {
 		ctx.throw(500, e)
