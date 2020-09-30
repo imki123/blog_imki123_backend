@@ -1,8 +1,7 @@
 const Router = require('koa-router')
 const Post = require('../models/post')
+const PostBody = require('../models/postBody')
 const Joi = require('joi')
-const checkLogin = require('../lib/checkLogin')
-const checkOwnPost = require('../lib/checkOwnPost')
 
 const router = new Router()
 
