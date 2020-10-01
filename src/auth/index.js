@@ -20,7 +20,9 @@ let cookieOptions = {
 
 //http통신이면 secure: false로 변경
 function setCookieSecureFalse(cookieOptions, ctx){
-	if(ctx.request.protocol !== 'https'){
+	if(ctx.request) console.log('request')
+	if(ctx.request.protocol) console.log('protocol')
+	if(!ctx.request || (ctx.request && ctx.request.protocol !== 'https')){
 		cookieOptions = {
 			...cookieOptions,
 			secure: false
