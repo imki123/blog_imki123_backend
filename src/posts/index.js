@@ -6,95 +6,15 @@ const Joi = require('joi')
 const router = new Router()
 
 /* posts 종류 : 
-	post: post(/posts/)
 	menus: get(/posts/menus)
 	list: get(/posts/)
 	tag list: get(/posts/:tags)
 	read: get(/posts/id/:postId)
-	delete: delete(/posts/:postId)
+	post: post(/posts/)
 	update: patch(/posts/:postId)
+	delete: delete(/posts/:postId)
 */
 // 라우터 설정
-/* const goBody = async (postId) => {
-	//let postBody = await PostBody.findOne({ postId: postId })
-	//let post = await Post.findOne({ postId: postId })
-	const posts = await Post.find()
-
-	for (let i of posts) {
-		postId = i.postId
-		let post = await Post.findOneAndUpdate(
-			{ postId: postId },
-			{
-				body: '',
-			},
-			{ new: true },
-		)
-		console.log(post)
-		let body = i.body
-		let postBody = await PostBody.findOne({ postId: postId })
-
-		if (i.body) {
-			if (!postBody) {
-				postBody = new PostBody({
-					postId: postId,
-					body: body,
-				})
-				postBody = await postBody.save()
-			} else {
-				postBody = await PostBody.findOneAndUpdate(
-					{ postId: postId },
-					{
-						body: body,
-					},
-					{ new: true },
-				)
-			}
-		}
-		
-		console.log(postBody) 
-	}
-} */
-//goBody(1)
-
-//포스트 작성 post
-router.post('/', async (ctx) => {
-	const schema = Joi.object().keys({
-		//객체가 다음 필드를 가지고 있음을 검증
-		postId: Joi.number(),
-		title: Joi.string().required(), //required가 있으면 필수항목
-		body: Joi.any().required(),
-		text: Joi.string(),
-		tags: Joi.array().items(Joi.string()).required(),
-	})
-	const result = schema.validate(ctx.request.body)
-	if (result.error) {
-		console.log('Joi validation fail.', result.error)
-		ctx.status = 400 //Bad Request
-		ctx.body = result.error
-		return
-	}
-
-	let postId = 1
-	const posts = await Post.find().exec()
-	if (posts.length > 0) {
-		postId = posts[posts.length - 1].postId + 1
-	}
-	const { title, body, tags, text } = ctx.request.body
-	const post = new Post({
-		postId,
-		title,
-		body,
-		text,
-		tags,
-		user: ctx.state.user,
-	})
-	try {
-		await post.save()
-		ctx.body = post
-	} catch (e) {
-		ctx.throw(500, e)
-	}
-})
 //포스트 메뉴 목록 list /posts/menus
 router.get('/menus', async (ctx) => {
 	try {
@@ -246,19 +166,45 @@ router.get('/postBody/:postId', async (ctx) => {
 		ctx.throw(500, e)
 	}
 })
+//포스트 작성 post
+router.post('/', async (ctx) => {
+	const schema = Joi.object().keys({
+		//객체가 다음 필드를 가지고 있음을 검증
+		postId: Joi.number(),
+		title: Joi.string().required(), //required가 있으면 필수항목
+		body: Joi.any().required(),
+		text: Joi.string(),
+		tags: Joi.array().items(Joi.string()).required(),
+	})
+	const result = schema.validate(ctx.request.body)
+	if (result.error) {
+		console.log('Joi validation fail.', result.error)
+		ctx.status = 400 //Bad Request
+		ctx.body = result.error
+		return
+	}
 
-//특정 포스트 삭제 delete : delete(/posts/:postId)
-//router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
-router.delete('/:postId', async (ctx) => {
+	let postId = 1
+	const posts = await Post.find().exec()
+	if (posts.length > 0) {
+		postId = posts[posts.length - 1].postId + 1
+	}
+	const { title, body, tags, text } = ctx.request.body
+	const post = new Post({
+		postId,
+		title,
+		text,
+		tags,
+		user: ctx.state.user,
+	})
+	const postBody = new PostBody({
+		postId,
+		body,
+	})
 	try {
-		const { postId } = ctx.params
-		const post = await Post.findOneAndRemove({ postId: postId })
-		if (post) {
-			ctx.body = post
-		} else {
-			ctx.status = 204 //No content
-			return
-		}
+		await post.save()
+		await postBody.save()
+		ctx.body = post
 	} catch (e) {
 		ctx.throw(500, e)
 	}
@@ -272,8 +218,16 @@ router.patch('/:postId', async (ctx) => {
 			{ postId: postId },
 			{
 				...ctx.request.body,
+				body: '',
 				publishedDate: new Date(new Date().getTime() + 9 * 60 * 60 * 1000),
 				user: ctx.state.user,
+			},
+			{ new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
+		)
+		await PostBody.findOneAndUpdate(
+			{ postId: postId },
+			{
+				...ctx.request.body,
 			},
 			{ new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
 		)
@@ -287,5 +241,22 @@ router.patch('/:postId', async (ctx) => {
 		ctx.throw(500, e)
 	}
 })
+//특정 포스트 삭제 delete : delete(/posts/:postId)
+//router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
+	router.delete('/:postId', async (ctx) => {
+		try {
+			const { postId } = ctx.params
+			const post = await Post.findOneAndRemove({ postId: postId })
+			await PostBody.findOneAndRemove({ postId: postId })
+			if (post) {
+				ctx.body = post
+			} else {
+				ctx.status = 204 //No content
+				return
+			}
+		} catch (e) {
+			ctx.throw(500, e)
+		}
+	})
 
 module.exports = router
