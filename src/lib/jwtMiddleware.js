@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const setCookieSecureFalse = require('./setCookieSecureFalse')
 
 let cookieOptions = {
 	maxAge: 1000 * 60 * 60 * 24 * 7, //7일
@@ -7,20 +8,6 @@ let cookieOptions = {
 	sameSite: 'none', //CORS
 	overwrite: true,
 	httpOnly: true,
-}
-
-//http통신이면 secure: false로 변경
-function setCookieSecureFalse(cookieOptions, ctx){
-	if(ctx.request) console.log('request')
-	if(ctx.request.protocol) console.log('protocol')
-	if(!ctx.request || (ctx.request && ctx.request.protocol !== 'https')){
-		cookieOptions = {
-			...cookieOptions,
-			secure: false
-		}
-		console.log('cookie.secure = false. Cannot set cookies.')
-	}
-	return cookieOptions
 }
 
 const jwtMiddleware = async (ctx, next) => {

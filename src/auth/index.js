@@ -1,5 +1,7 @@
 const Router = require('koa-router')
 const User = require('../models/user')
+const setCookieSecureFalse = require('../lib/setCookieSecureFalse')
+
 const Joi = require('joi')
 const router = new Router()
 
@@ -17,20 +19,6 @@ let cookieOptions = {
 	overwrite: true,
 	httpOnly: true,
 };
-
-//http통신이면 secure: false로 변경
-function setCookieSecureFalse(cookieOptions, ctx){
-	if(ctx.request) console.log('request')
-	if(ctx.request.protocol) console.log('protocol')
-	if(!ctx.request || (ctx.request && ctx.request.protocol !== 'https')){
-		cookieOptions = {
-			...cookieOptions,
-			secure: false
-		}
-		console.log('cookie.secure = false. Cannot set cookies.')
-	}
-	return cookieOptions
-}
 
 // 라우터 설정
 // 유저 등록 register: post(/auth/register/)
