@@ -6,20 +6,16 @@ const MenuSchema = new Schema({
 	count: {
         type: Number,
         default: 1,
-    },
+	},
+	level: {
+        type: Number,
+        default: 1,
+	},
 	order: {
 		type: Number,
 		default: 100,
 	},
-	subMenus: [
-		{
-			name: String,
-			count: {
-                type: Number,
-                default: 1,
-            },
-		},
-	],
+	parent: String
 })
 
 const Menu = mongoose.model('Menu', MenuSchema)
