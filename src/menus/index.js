@@ -6,7 +6,46 @@ const router = new Router()
 /* menus 종류 : 
     get: get(/menus/)
 */
+const addMenu = async (name, level, parent, order) => {
+	let menu = await Menu.findOne({ name: name }) //태그가 등록되어있는지 체크
+	if (menu) {
+		//있으면
+		menu.count++ //카운트 증가
+		menu = await Menu.findOneAndUpdate({ name: name }, menu, { new: true })
+		console.log('addMenu:', menu.count)
+	} else if(name && level){
+		//없으면
+		if (!parent) {
+			menu = new Menu({
+				name: name,
+				level: level,
+				order: order,
+			})
+		} else {
+			menu = new Menu({
+				name: name,
+				level: level,
+				parent: parent,
+			})
+		}
+		menu = await menu.save()
+		console.log('addMenu:', menu.count)
+	}
+}
 
+const removeMenu = async (name) => {
+	let menu = await Menu.findOne({ name: name }) //태그가 등록되어있는지 체크
+	if (menu) {
+		//있으면
+		if (menu.count > 1) {
+			menu.count-- //카운트 감소
+			menu = await Menu.findOneAndUpdate({ name: name }, menu, { new: true })
+		} else {
+			menu = await Menu.findOneAndRemove({ name: name })
+		}
+		console.log('removeMenu:', menu.count)
+	}
+}
 // 라우터 설정
 //get: get(/menus/)
 router.get('/', async (ctx) => {
@@ -64,4 +103,4 @@ router.post('/', async (ctx) => {
 	}
 })
 
-module.exports = router
+module.exports = {router, addMenu, removeMenu}

@@ -8,7 +8,7 @@ const jwtMiddleware = require('./lib/jwtMiddleware')
 const posts = require('./posts')
 const auth = require('./auth')
 const comments = require('./comments')
-const menus = require('./menus')
+const menus = require('./menus').router
 
 const catbook = require('./catbook')
 

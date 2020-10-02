@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const Post = require('../models/post')
 const PostBody = require('../models/postBody')
+const {addMenu, removeMenu} = require('../menus')
 const Joi = require('joi')
 
 const router = new Router()
@@ -201,6 +202,8 @@ router.post('/', async (ctx) => {
 		postId,
 		body,
 	})
+	addMenu(tags[0], 1)
+	addMenu(tags[1], 2, tags[0])
 	try {
 		await post.save()
 		await postBody.save()
@@ -214,6 +217,21 @@ router.post('/', async (ctx) => {
 router.patch('/:postId', async (ctx) => {
 	try {
 		const { postId } = ctx.params
+		const { tags } = ctx.request.body
+		//태그 변경 위해 기존 정보 가져오기
+		let originPost = await Post.findOne({ postId: postId })
+		if (originPost.tags[0] === tags[0]) {
+			if (originPost.tags[1] !== tags[1]) {
+				removeMenu(originPost.tags[1])
+				addMenu(tags[1], 2, tags[0]) //name, level, parent, order
+			}
+		} else {
+			removeMenu(originPost.tags[0])
+			addMenu(tags[0], 1) //name, level, parent, order
+			removeMenu(originPost.tags[1])
+			addMenu(tags[1], 2, tags[0]) //name, level, parent, order
+		}
+		//포스트 수정하기
 		const post = await Post.findOneAndUpdate(
 			{ postId: postId },
 			{
@@ -243,20 +261,23 @@ router.patch('/:postId', async (ctx) => {
 })
 //특정 포스트 삭제 delete : delete(/posts/:postId)
 //router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
-	router.delete('/:postId', async (ctx) => {
-		try {
-			const { postId } = ctx.params
-			const post = await Post.findOneAndRemove({ postId: postId })
-			await PostBody.findOneAndRemove({ postId: postId })
-			if (post) {
-				ctx.body = post
-			} else {
-				ctx.status = 204 //No content
-				return
-			}
-		} catch (e) {
-			ctx.throw(500, e)
+router.delete('/:postId', async (ctx) => {
+	try {
+		const { postId } = ctx.params
+		const originPost = await Post.findOne({ postId: postId })
+		removeMenu(originPost.tags[0])
+		removeMenu(originPost.tags[1])
+		const post = await Post.findOneAndRemove({ postId: postId })
+		await PostBody.findOneAndRemove({ postId: postId })
+		if (post) {
+			ctx.body = post
+		} else {
+			ctx.status = 204 //No content
+			return
 		}
-	})
+	} catch (e) {
+		ctx.throw(500, e)
+	}
+})
 
 module.exports = router
