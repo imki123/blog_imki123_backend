@@ -3,13 +3,10 @@ const Post = require('../models/post')
 const router = new Router()
 
 /*
-getRecentComments: get(/comments/recent)
-
-get: get(/comments/:postId)
+get: get(/comments/:postId), (/comments/recent)
 post: patch(/comments/:postId)
 update: patch(/comments/:postId/:commentId)
 delete: patch(/comments/delete/:postId/:commentId) 
-
 
 */
 
@@ -26,16 +23,26 @@ router.get('/:postId', async (ctx) => {
 				ctx.status = 204 //No content
 				return
 			}
-		} else if (postId === 'recent') {
+		} else if (postId === 'recent' || postId === 'recentAll') {
 			const posts = await Post.find()
-			let comments = []
+			const comments = []
 			if (posts) {
 				for (let i of posts) {
-					comments = comments.concat(i.comments)
+                    for (let j of i.comments) {
+                        let comment = {}
+                        comment.postId = i.postId
+                        comment.title = i.title
+                        comment.content = j.content
+                        comment.username = j.username
+                        comment.publishedDate = j.publishedDate
+                        comments.push(comment)
+                    }
 				}
 				comments.sort(function (a, b) {
 					return b.publishedDate - a.publishedDate
-				}) //내림차순
+                }) //내림차순
+
+                if(postId === 'recent') comments.splice(10) //recent면 10개만 추출(0~9)
 				ctx.body = comments
 			} else {
 				ctx.status = 404 //Not found
