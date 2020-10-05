@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const Post = require('../models/post')
 const PostBody = require('../models/postBody')
-const {addMenu, removeMenu} = require('../menus')
+const { addMenu, removeMenu } = require('../menus')
 const Joi = require('joi')
 
 const router = new Router()
