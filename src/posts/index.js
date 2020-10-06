@@ -185,28 +185,41 @@ router.post('/', async (ctx) => {
 		return
 	}
 
-	let postId = 1
-	const posts = await Post.find().exec()
-	if (posts.length > 0) {
-		postId = posts[posts.length - 1].postId + 1
-	}
-	const { title, body, tags, text } = ctx.request.body
-	const post = new Post({
-		postId,
-		title,
-		text,
-		tags,
-		user: ctx.state.user,
-	})
-	const postBody = new PostBody({
-		postId,
-		body,
-	})
-	addMenu(tags[0], 1)
-	addMenu(tags[1], 2, tags[0])
 	try {
+		//postId 생성
+		let postId = 1
+		const posts = await Post.find().exec()
+		if (posts.length > 0) {
+			postId = posts[posts.length - 1].postId + 1
+		}
+		const { title, body, tags, text } = ctx.request.body
+		const post = new Post({
+			postId,
+			title,
+			text,
+			tags,
+			user: ctx.state.user,
+		})
 		await post.save()
-		await postBody.save()
+
+		//postBody가 있는지 체크
+		let postBody = await PostBody.find({ postId: postId })
+		if (postBody) {
+			//postBody가 이미 있으면 body 업데이트
+			await PostBody.findOneAndUpdate({ postId: postId }, { body: body }, { new: true })
+		} else {
+			//없으면 새로 생성
+			postBody = new PostBody({
+				postId,
+				body,
+			})
+			await postBody.save()
+		}
+
+		//메뉴에 태그 추가하기
+		addMenu(tags[0], 1)
+		addMenu(tags[1], 2, tags[0])
+
 		ctx.body = post
 	} catch (e) {
 		ctx.throw(500, e)
