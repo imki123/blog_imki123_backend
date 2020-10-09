@@ -118,33 +118,32 @@ router.post('/login', async (ctx) => {
 //OAuth: post(/auth/oauth)
 router.post('/oauth', async (ctx) => {
 	const { username, email, imageUrl } = ctx.request.body
-
+	let user
 	try {
-		const user = new User({
-			username: username,
-			email: email,
-			imageUrl: imageUrl,
-			oAuth: true,
-		})
-		console.log(user)
-
 		//OAuth로 로그인할 경우 유저정보를 DB에 저장해둠(프로필 이미지 최신화 때문에)
-		const search = await User.findOne({ username: user.username })
+		const search = await User.findOne({ username: username })
 		if (search) {
-			await User.findOneAndUpdate(
-				{ username: user.username },
+			user = await User.findOneAndUpdate(
+				{ username: username },
 				{
-					username: user.username,
-					email: user.email,
-					imageUrl: user.imageUrl,
+					username: username,
+					email: email,
+					imageUrl: imageUrl,
 					oAuth: true,
 				},
 				{ new: true },
 			)
 		} else {
+			user = new User({
+				username: username,
+				email: email,
+				imageUrl: imageUrl,
+				oAuth: true,
+			})
+			
 			user.save()
 		}
-
+		//console.log(user)
 		//토큰 발급
 		const token = user.generateToken()
 
