@@ -32,7 +32,6 @@ router.post('/user', async (ctx) => {
 	console.log(username)
 	try {
 		const user = await User.findOne({ username: username })
-		console.log(user)
 		if (!user) {
 			ctx.status = 401
 			return
@@ -235,9 +234,10 @@ router.post('/merge', async (ctx) => {
 			await User.findOneAndUpdate({ username: mergedUsername }, { username: username })
 		}
 		const posts = await Post.find()
-		let cnt = 0
+		let totalCnt = 0
 		for (let i of posts) {
 			let comments = []
+			let cnt = 0
 			for (let j of i.comments) {
 				let comment = j
 				if (j.username === mergedUsername) {
@@ -246,10 +246,11 @@ router.post('/merge', async (ctx) => {
 				}
 				comments.push(comment)
 			}
+			totalCnt += cnt
 			console.log(comments)
 			//await Post.findOneAndUpdate({ postId: i.postId }, { comments: comments })
 		}
-		ctx.body = cnt
+		ctx.body = totalCnt
 	} catch (e) {
 		ctx.throw(500, e)
 	}
