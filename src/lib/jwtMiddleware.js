@@ -32,7 +32,7 @@ const jwtMiddleware = async (ctx, next) => {
 				ctx.status = 204 //No content 
 				ctx.cookies.set('access_token', '', cookieOptions)
 				ctx.state.user = null
-				next()
+				return next()
 			}
 		}
 		

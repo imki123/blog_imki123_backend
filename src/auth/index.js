@@ -1,5 +1,6 @@
 const Router = require('koa-router')
 const User = require('../models/user')
+const Post = require('../models/post')
 const setCookieSecureFalse = require('../lib/setCookieSecureFalse')
 
 const Joi = require('joi')
@@ -12,6 +13,8 @@ const router = new Router()
 	OAuth: post(/auth/oauth)
     check: get(/auth/check)
 	logout: post(/auth/logout)
+
+	merge: post(/auth/merge)
 */
 
 let cookieOptions = {
@@ -28,7 +31,7 @@ router.post('/user', async (ctx) => {
 	const { username } = ctx.request.body.data
 	console.log(username)
 	try {
-		const user = await User.findOne({username: username})
+		const user = await User.findOne({ username: username })
 		console.log(user)
 		if (!user) {
 			ctx.status = 401
@@ -140,7 +143,7 @@ router.post('/oauth', async (ctx) => {
 				imageUrl: imageUrl,
 				oAuth: true,
 			})
-			
+
 			user.save()
 		}
 		//console.log(user)
@@ -209,6 +212,44 @@ router.delete('/withdraw', async (ctx) => {
 		//토큰 삭제
 		ctx.cookies.set('access_token', '', cookieOptions)
 		ctx.status = 200 //No Content
+	} catch (e) {
+		ctx.throw(500, e)
+	}
+})
+//merge: post(/auth/merge)
+router.post('/merge', async (ctx) => {
+	const { username, mergedUsername } = ctx.request.body
+	if (!username || !mergedUsername) {
+		ctx.state = 401
+		return
+	}
+
+	try {
+		const user = await User.findOne({ username: username })
+		console.log(user)
+		if (user) {
+			//유저정보가 있으면 전부다 바꾸고
+			await User.findOneAndUpdate({ username: mergedUsername }, user)
+		} else {
+			//유저정보가 없으면 이름만 바꿈
+			await User.findOneAndUpdate({ username: mergedUsername }, { username: username })
+		}
+		const posts = await Post.find()
+		let cnt = 0
+		for (let i of posts) {
+			let comments = []
+			for (let j of i.comments) {
+				let comment = j
+				if (j.username === mergedUsername) {
+					comment.username = username
+					cnt++
+				}
+				comments.push(comment)
+			}
+			console.log(comments)
+			//await Post.findOneAndUpdate({ postId: i.postId }, { comments: comments })
+		}
+		ctx.body = cnt
 	} catch (e) {
 		ctx.throw(500, e)
 	}
