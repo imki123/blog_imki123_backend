@@ -6,6 +6,7 @@ const Joi = require('joi')
 const router = new Router()
 
 /* auth 종류 : 
+	getUserInfo: post(/auth/user)
     register: post(/auth/register/)
 	login: post(/auth/login)
 	OAuth: post(/auth/oauth)
@@ -22,6 +23,23 @@ let cookieOptions = {
 }
 
 // 라우터 설정
+// getUserInfo: post(/auth/user)
+router.post('/user', async (ctx) => {
+	const { username } = ctx.request.body.data
+	console.log(username)
+	try {
+		const user = await User.findOne({username: username})
+		console.log(user)
+		if (!user) {
+			ctx.status = 401
+			return
+		}
+		ctx.body = user.serialize()
+	} catch (e) {
+		ctx.throw(500, e)
+	}
+})
+
 // 유저 등록 register: post(/auth/register/)
 router.post('/register', async (ctx) => {
 	const schema = Joi.object().keys({
@@ -109,7 +127,23 @@ router.post('/oauth', async (ctx) => {
 			oAuth: true,
 		})
 		console.log(user)
-		ctx.body = user.serialize()
+
+		//OAuth로 로그인할 경우 유저정보를 DB에 저장해둠(프로필 이미지 최신화 때문에)
+		const search = await User.findOne({ username: user.username })
+		if (search) {
+			await User.findOneAndUpdate(
+				{ username: user.username },
+				{
+					username: user.username,
+					email: user.email,
+					imageUrl: user.imageUrl,
+					oAuth: true,
+				},
+				{ new: true },
+			)
+		} else {
+			user.save()
+		}
 
 		//토큰 발급
 		const token = user.generateToken()
@@ -118,6 +152,7 @@ router.post('/oauth', async (ctx) => {
 		cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
 		ctx.cookies.set('access_token', token, cookieOptions)
+		ctx.body = user.serialize()
 	} catch (e) {
 		ctx.throw(500, e)
 	}
@@ -126,7 +161,7 @@ router.post('/oauth', async (ctx) => {
 //check: get(/auth/check)
 router.get('/check', async (ctx) => {
 	const { user } = ctx.state
-	
+
 	if (!user) {
 		//로그인 중 아님
 		ctx.status = 204 //No Content
