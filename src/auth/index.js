@@ -33,7 +33,8 @@ router.post('/user', async (ctx) => {
 	try {
 		const user = await User.findOne({ username: username })
 		if (!user) {
-			ctx.status = 401
+			ctx.status = 204
+			ctx.body = 'No '+username
 			return
 		}
 		ctx.body = user.serialize()
