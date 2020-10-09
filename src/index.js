@@ -80,7 +80,6 @@ app.use(
 	cors({
 		origin: checkOriginAgainstWhitelist,
 		allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-		exposeHeaders: ['Total-Post', 'Last-Page'],
 		allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
 		credentials: true,
 	}),

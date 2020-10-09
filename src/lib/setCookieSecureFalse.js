@@ -3,9 +3,10 @@ function setCookieSecureFalse(cookieOptions, ctx){
 	if(ctx.request && ctx.request.protocol !== 'https'){
 		cookieOptions = {
 			...cookieOptions,
-			secure: false
+			secure: false,
+			sameSite: "Lax"
 		}
-		console.log('cookie.secure is changed false. ctx.request.protocoll is http.')
+		console.log('-- ctx.request.protocoll is http. cookie.secure = false, cookie.sameSite = Lax. ')
 	}
 	return cookieOptions
 }
