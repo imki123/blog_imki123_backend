@@ -92,12 +92,7 @@ router.get('/tag/:tag', async (ctx) => {
 		if (posts) {
 			let list = []
 			for (let i of posts) {
-				list.push({
-					postId: i.postId,
-					title: i.title,
-					text: i.text,
-					publishedDate: i.publishedDate,
-				})
+				list.push(i)
 			}
 			ctx.body = {
 				list: list,
