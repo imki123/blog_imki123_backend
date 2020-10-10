@@ -115,7 +115,9 @@ router.get('/tag/:tag', async (ctx) => {
 router.get('/:postId', async (ctx) => {
 	try {
 		const { postId } = ctx.params
+		
 		if (postId === 'recents') {
+			//recents면 최근 게시글 5개 불러오기
 			const posts = await Post.find({ postId: { $gt: 1 } })
 				.sort({ publishedDate: -1 })
 				.limit(5)
@@ -126,7 +128,8 @@ router.get('/:postId', async (ctx) => {
 				return
 			}
 		} else if (postId === 'popular') {
-			let posts = await Post.find({ postId: { $gt: 1 } }).sort({ publishedDate: -1 })
+			//popular면 댓글, 조회수, 게시일자로 정렬해서 게시글 5개 불러오기
+			let posts = await Post.find({ postId: { $gt: 1 } }).sort({ views: -1, publishedDate: -1 })
 			if (posts) {
 				posts.sort(function (a, b) {
 					return b.comments.length - a.comments.length
@@ -138,10 +141,13 @@ router.get('/:postId', async (ctx) => {
 				return
 			}
 		} else {
+			//포스트아이디가 있으면 포스트 1개 불러오기
 			const post = await Post.findOne({ postId: postId })
 			if (post) {
 				ctx.body = post
 				ctx.state.post = post
+				let views = post.views ? post.views +1 : 1 
+				await Post.findOneAndUpdate({postId}, {views: views})
 			} else {
 				ctx.status = 404 //Not found
 				return

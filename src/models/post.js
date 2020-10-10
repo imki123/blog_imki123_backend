@@ -9,6 +9,10 @@ const PostSchema = new Schema({
     title: String,
     body: Object,
     text: String,
+    views: {
+        type: Number,
+        default: 0
+    },
     tags: [String],
     publishedDate: {
         type: Date,
