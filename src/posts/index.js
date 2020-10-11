@@ -204,7 +204,8 @@ router.post('/', async (ctx) => {
 		await post.save()
 
 		//postBody가 있는지 체크
-		let postBody = await PostBody.find({ postId: postId })
+		console.log(body)
+		let postBody = await PostBody.findOne({ postId: postId })
 		if (postBody) {
 			//postBody가 이미 있으면 body 업데이트
 			await PostBody.findOneAndUpdate({ postId: postId }, { body: body }, { new: true })
