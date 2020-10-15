@@ -71,11 +71,8 @@ router.get('/', async (ctx) => {
 })
 //특정 태그 포스트 목록 list
 router.get('/tag/:tag', async (ctx) => {
-	const page = parseInt(ctx.query.page || '1', 10) //페이지를 숫자로 변환. 없다면 1
-	if (page < 1) {
-		ctx.status = 400
-		return
-	}
+	let page = parseInt(ctx.query.page, 10) || 1 //페이지를 숫자로 변환. 없다면 1
+	if (page < 1) page = 1
 
 	try {
 		const { tag } = ctx.params
