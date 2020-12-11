@@ -16,18 +16,18 @@ const { PORT, MONGO_URI } = process.env
 
 //mongoDB 연결
 mongoose
-	.set('returnOriginal', false)
-	.connect(MONGO_URI, {
-		useNewUrlParser: true,
-		useFindAndModify: false,
-		useUnifiedTopology: true,
-	})
-	.then(() => {
-		console.log('Connected to MongoDB.')
-	})
-	.catch((e) => {
-		console.error('Cannot connect to MongoDB. Check MONGO_URI.', e)
-	})
+  .set('returnOriginal', false)
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log('Connected to MongoDB.')
+  })
+  .catch((e) => {
+    console.error('Cannot connect to MongoDB. Check MONGO_URI.', e)
+  })
 
 const app = new Koa()
 app.proxy = true
@@ -35,7 +35,7 @@ const router = new Router()
 
 //라우터 설정
 router.get('/', (ctx) => {
-	ctx.body = `Hello, blog_imki123_backend
+  ctx.body = `Hello, blog_imki123_backend
 
 post: post(/posts/)
 list: get(/posts/)
@@ -67,29 +67,29 @@ router.use('/menus', menus.routes()) //menus 라우트 적용
 router.use('/catbook', catbook.routes()) //catbook 라우트 적용
 
 //cors 정책 적용
-const whitelist = ['http://localhost:3000', 'https://imki123.github.io', 'http://localhost:19006', 'http://localhost:45678']
+const whitelist = ['http://localhost:3000', 'https://imki123.github.io', 'http://localhost:19006', 'http://localhost:45678', 'http://192.168.0.4:3000']
 function checkOriginAgainstWhitelist(ctx) {
-	//https://madole.xyz/whitelisting-multiple-domains-with-kcors-in-koa
-	const requestOrigin = ctx.accept.headers.origin
-	if (!whitelist.includes(requestOrigin)) {
-		return ctx.throw(`🙈 ${requestOrigin} is not a valid origin`)
-	}
-	return requestOrigin
+  //https://madole.xyz/whitelisting-multiple-domains-with-kcors-in-koa
+  const requestOrigin = ctx.accept.headers.origin
+  if (!whitelist.includes(requestOrigin)) {
+    return ctx.throw(`🙈 ${requestOrigin} is not a valid origin`)
+  }
+  return requestOrigin
 }
 app.use(
-	cors({
-		origin: checkOriginAgainstWhitelist,
-		allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-		allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
-		credentials: true,
-	}),
+  cors({
+    origin: checkOriginAgainstWhitelist,
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
+    credentials: true,
+  }),
 )
 
 //body-parser 사용
 app.use(
-	bodyParser({
-		jsonLimit: '10mb', //default: 1mb
-	}),
+  bodyParser({
+    jsonLimit: '10mb', //default: 1mb
+  }),
 )
 //jwtMiddleware 적용
 app.use(jwtMiddleware)
@@ -100,11 +100,11 @@ app.use(router.routes()).use(router.allowedMethods())
 const port = PORT || 4000
 
 app.listen(port, () => {
-	console.log(`Listening on port: ${port}\nConnect to http://localhost:${port}`)
+  console.log(`Listening on port: ${port}\nConnect to http://localhost:${port}`)
 })
 
 //heroku sleep 방지
 const http = require('http')
 setInterval(function () {
-	http.get('http://blog-imki123-backend.herokuapp.com')
+  http.get('http://blog-imki123-backend.herokuapp.com')
 }, 600000) //10분
