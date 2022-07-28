@@ -2,13 +2,9 @@ const mongoose = require('mongoose')
 
 const { Schema } = mongoose
 const SheetSchema = new Schema({
-  // sheetId: Number,
-  // name: String,
+  sheetId: Number,
   name: String,
-  count: {
-    type: Number,
-    default: 1,
-  },
+  table: [[String | Number]],
 })
 
 const Sheet = mongoose.model('Sheet', SheetSchema)
