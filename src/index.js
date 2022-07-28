@@ -11,6 +11,7 @@ const comments = require('./comments')
 const menus = require('./menus').router
 
 const catbook = require('./catbook')
+const accountBook = require('./accountBook')
 
 const { PORT, MONGO_URI } = process.env
 
@@ -65,9 +66,17 @@ router.use('/auth', auth.routes()) //auth 라우트 적용
 router.use('/comments', comments.routes()) //comments 라우트 적용
 router.use('/menus', menus.routes()) //menus 라우트 적용
 router.use('/catbook', catbook.routes()) //catbook 라우트 적용
+router.use('/accountBook', accountBook.routes()) //accountBook 라우트 적용
 
 //cors 정책 적용
-const whitelist = ['http://localhost:3000', 'https://imki123.github.io', 'http://localhost:19006', 'http://localhost:45678', 'http://192.168.0.4:3000']
+const whitelist = [
+  'http://localhost:3000',
+  'http://localhost:4000', // account-book
+  'https://imki123.github.io',
+  'http://localhost:19006',
+  'http://localhost:45678',
+  'http://192.168.0.4:3000',
+]
 function checkOriginAgainstWhitelist(ctx) {
   //https://madole.xyz/whitelisting-multiple-domains-with-kcors-in-koa
   const requestOrigin = ctx.accept.headers.origin
@@ -80,7 +89,15 @@ app.use(
   cors({
     origin: checkOriginAgainstWhitelist,
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowHeaders: ['Origin', 'Access-Control-Request-Method', 'X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type', 'Accept', 'Set-Cookie'],
+    allowHeaders: [
+      'Origin',
+      'Access-Control-Request-Method',
+      'X-Requested-With',
+      'X-HTTP-Method-Override',
+      'Content-Type',
+      'Accept',
+      'Set-Cookie',
+    ],
     credentials: true,
   }),
 )
