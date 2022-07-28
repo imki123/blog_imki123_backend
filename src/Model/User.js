@@ -56,4 +56,5 @@ UserSchema.statics.findByUsername = async function (username) {
 }
 
 const User = mongoose.model('User', UserSchema)
+// Collection name 'User' will change to 'users'
 module.exports = User

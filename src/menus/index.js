@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const Menu = require('../models/menu')
+const Menu = require('../Model/Menu')
 
 const router = new Router()
 

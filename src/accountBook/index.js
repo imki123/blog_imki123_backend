@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const router = new Router()
-const Sheet = require('../models/Sheet')
+const Sheet = require('../Model/Sheet')
 
 /**
  * accountBook에서 사용하는 api
@@ -14,11 +14,10 @@ const Sheet = require('../models/Sheet')
 
 // 라우터 설정
 
-router.get('/sheet/', async (ctx) => {
+router.get('/', async (ctx) => {
   try {
     const sheet = await Sheet.find()
     console.log(sheet)
-    console.log(Sheet)
     if (sheet) ctx.body = sheet
     else ctx.status = 204 //No Content
   } catch (e) {

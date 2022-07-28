@@ -1,6 +1,6 @@
 const Router = require('koa-router')
-const Post = require('../models/post')
-const PostBody = require('../models/postBody')
+const Post = require('../Model/Post')
+const PostBody = require('../Model/PostBody')
 const { addMenu, removeMenu } = require('../menus')
 const Joi = require('joi')
 
@@ -121,7 +121,10 @@ router.get('/:postId', async (ctx) => {
       }
     } else if (postId === 'popular') {
       //popular면 댓글, 조회수, 게시일자로 정렬해서 게시글 5개 불러오기
-      let posts = await Post.find({ postId: { $gt: 1 } }).sort({ views: -1, publishedDate: -1 })
+      let posts = await Post.find({ postId: { $gt: 1 } }).sort({
+        views: -1,
+        publishedDate: -1,
+      })
       if (posts) {
         posts.sort(function (a, b) {
           return b.comments.length - a.comments.length
@@ -208,7 +211,11 @@ router.post('/', async (ctx) => {
     let postBody = await PostBody.findOne({ postId: postId })
     if (postBody) {
       //postBody가 이미 있으면 body 업데이트
-      await PostBody.findOneAndUpdate({ postId: postId }, { body: body }, { new: true })
+      await PostBody.findOneAndUpdate(
+        { postId: postId },
+        { body: body },
+        { new: true },
+      )
     } else {
       //없으면 새로 생성
       postBody = new PostBody({

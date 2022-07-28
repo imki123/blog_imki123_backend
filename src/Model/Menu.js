@@ -19,4 +19,5 @@ const MenuSchema = new Schema({
 })
 
 const Menu = mongoose.model('Menu', MenuSchema)
+// Collection name 'Menu' will change to 'menus'
 module.exports = Menu

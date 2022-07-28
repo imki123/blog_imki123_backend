@@ -7,4 +7,5 @@ const PostBodySchema = new Schema({
 })
 
 const PostBody = mongoose.model('PostBody', PostBodySchema)
+// Collection name 'PostBody' will change to 'postbodies'
 module.exports = PostBody
