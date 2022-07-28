@@ -4,7 +4,7 @@ const { Schema } = mongoose
 const SheetSchema = new Schema({
   sheetId: Number,
   name: String,
-  data: Object,
+  table: Object,
 })
 
 const Sheet = mongoose.model('Sheet', SheetSchema)

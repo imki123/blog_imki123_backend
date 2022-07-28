@@ -1,13 +1,11 @@
 const Router = require('koa-router')
 const router = new Router()
-const { default: Axios } = require('axios')
 const Sheet = require('../models/Sheet')
-const { Translate } = require('@google-cloud/translate').v2
 
 /**
  * accountBook에서 사용하는 api
- * get(/sheet) : { (sheetId: number, name: string)[] }
- * get(/sheet/:sheetId) : {
+ * get(/accountBook/sheet/) : { (sheetId: number, name: string)[] }
+ * get(/accountBook/sheet/:sheetId) : {
  *   sheetId: number,
  *   name: string,
  *   data: (string | number)[][]
@@ -16,10 +14,16 @@ const { Translate } = require('@google-cloud/translate').v2
 
 // 라우터 설정
 
-router.get('/sheet', async (ctx) => {
-  const sheet = await Sheet.find().sort({ sheetId: 1 })
-  if (sheet) ctx.body = sheet
-  else ctx.status = 204 //No Content
+router.get('/sheet/', async (ctx) => {
+  try {
+    const sheet = await Sheet.find()
+    console.log(sheet)
+    console.log(Sheet)
+    if (sheet) ctx.body = sheet
+    else ctx.status = 204 //No Content
+  } catch (e) {
+    ctx.throw(500, e)
+  }
 })
 
 module.exports = router
