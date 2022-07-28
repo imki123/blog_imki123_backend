@@ -75,7 +75,7 @@ router.use('/accountBook', accountBook.routes()) //accountBook 라우트 적용
 //cors 정책 적용
 const whitelist = [
   'http://localhost:3000',
-  'http://localhost:4000', // account-book
+  'http://localhost:4001', // account-book
   'https://imki123.github.io',
   'http://localhost:19006',
   'http://localhost:45678',

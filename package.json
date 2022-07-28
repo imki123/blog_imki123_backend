@@ -14,7 +14,7 @@
   "dependencies": {
     "@google-cloud/translate": "6.0.3",
     "@koa/cors": "3.1.0",
-    "axios": "0.20.0",
+    "axios": "^0.20.0",
     "bcrypt": "5.0.0",
     "dotenv": "8.2.0",
     "eslint-config-prettier": "6.11.0",
