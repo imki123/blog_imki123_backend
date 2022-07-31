@@ -14,6 +14,7 @@ const Sheet = require('../Model/Sheet')
 
 // 라우터 설정
 
+// sheet 목록 전체 불러오기
 router.get('/sheet/', async (ctx) => {
   try {
     const sheet = await Sheet.find()
@@ -25,6 +26,7 @@ router.get('/sheet/', async (ctx) => {
   }
 })
 
+// sheetId로 불러오기
 router.get('/sheet/:sheetId', async (ctx) => {
   try {
     const { sheetId } = ctx.params
@@ -36,4 +38,28 @@ router.get('/sheet/:sheetId', async (ctx) => {
     ctx.throw(500, e)
   }
 })
+
+// sheet 업데이트
+router.patch('/sheet/:sheetId', async (ctx) => {
+  const { sheetId } = ctx.params
+  try {
+    // sheetId로 찾고 업데이트
+    const updated = await Sheet.findOneAndUpdate(
+      { sheetId: sheetId },
+      {
+        ...ctx.request.body,
+      },
+      { new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
+    )
+    if (updated) {
+      ctx.body = updated
+    } else {
+      ctx.status = 204 //No content
+      return
+    }
+  } catch (e) {
+    ctx.throw(500, e)
+  }
+})
+
 module.exports = router
