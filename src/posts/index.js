@@ -1,4 +1,4 @@
-import Router from 'koa-Router'
+import Router from 'koa-router'
 import { Post } from '../Model/Post.js'
 import { PostBody } from '../Model/PostBody.js'
 import { addMenu, removeMenu } from '../menus/index.js'
