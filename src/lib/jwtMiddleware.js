@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken')
-const User = require('../Model/User')
-const setCookieSecureFalse = require('./setCookieSecureFalse')
+import jwt from 'jsonwebtoken'
+import { User } from '../Model/User.js'
+import setCookieSecureFalse from './setCookieSecureFalse.js'
 
 let cookieOptions = {
   maxAge: 1000 * 60 * 60 * 24 * 7, //7일
@@ -10,7 +10,7 @@ let cookieOptions = {
   httpOnly: true,
 }
 
-const jwtMiddleware = async (ctx, next) => {
+export const jwtMiddleware = async (ctx, next) => {
   //토큰 있는지 체크
   const token = ctx.cookies.get('access_token')
   if (token === undefined || token === '') {
@@ -63,4 +63,3 @@ const jwtMiddleware = async (ctx, next) => {
     return next()
   }
 }
-module.exports = jwtMiddleware

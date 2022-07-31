@@ -1,17 +1,19 @@
-require('dotenv').config()
-const Koa = require('koa')
-const Router = require('koa-router')
-const mongoose = require('mongoose')
-const bodyParser = require('koa-bodyparser')
-const cors = require('@koa/cors')
-const jwtMiddleware = require('./lib/jwtMiddleware')
-const posts = require('./posts')
-const auth = require('./auth')
-const comments = require('./comments')
-const menus = require('./menus').router
+import { config } from 'dotenv'
+import Koa from 'koa'
+import Router from 'koa-router'
+import mongoose from 'mongoose'
+import bodyParser from 'koa-bodyparser'
+import cors from '@koa/cors'
+import http from 'http'
+import { routerPosts } from './posts/index.js'
+import { routerAuth } from './auth/index.js'
+import { routerComments } from './comments/index.js'
+import { routerMenus } from './menus/index.js'
+import { routerCatbook } from './catbook/index.js'
+import { routerAccountBook } from './accountBook/index.js'
+import { jwtMiddleware } from './lib/jwtMiddleware.js'
 
-const catbook = require('./catbook')
-const accountBook = require('./accountBook')
+config()
 
 const { PORT, MONGO_URI } = process.env
 
@@ -38,39 +40,39 @@ const router = new Router()
 router.get('/', (ctx) => {
   ctx.body = `Hello, blog_imki123_backend
 
-post: post(/posts/)
-list: get(/posts/)
-menus: get(/posts/menus)
-tag list: get(/posts/:tags)
-read: get(/posts/id/:postId)
-delete: delete(/posts/:postId)
-update: patch(/posts/:postId)
+  post: post(/posts/)
+  list: get(/posts/)
+  menus: get(/posts/menus)
+  tag list: get(/posts/:tags)
+  read: get(/posts/id/:postId)
+  delete: delete(/posts/:postId)
+  update: patch(/posts/:postId)
 
-register: post(/auth/register/)
-login: post(/auth/login)
-check: get(/auth/check)
-logout: post(/auth/logout)
+  register: post(/auth/register/)
+  login: post(/auth/login)
+  check: get(/auth/check)
+  logout: post(/auth/logout)
 
 
-get: get(/comments/:postId)
-post: patch(/comments/:postId)
-update: patch(/comments/:postId/:commentId)
-delete: delete(/comments/:postId/:commentId)
+  get: get(/comments/:postId)
+  post: patch(/comments/:postId)
+  update: patch(/comments/:postId/:commentId)
+  delete: delete(/comments/:postId/:commentId)
 
-- accountBook
-get(/accountBook/sheet/)
-get(/accountBook/sheet/sheetId)
+  - accountBook
+  get(/accountBook/sheet/)
+  get(/accountBook/sheet/sheetId)
 
-Thanks :D
+  Thanks :D
 `
 })
 
-router.use('/posts', posts.routes()) //posts 라우트 적용
-router.use('/auth', auth.routes()) //auth 라우트 적용
-router.use('/comments', comments.routes()) //comments 라우트 적용
-router.use('/menus', menus.routes()) //menus 라우트 적용
-router.use('/catbook', catbook.routes()) //catbook 라우트 적용
-router.use('/accountBook', accountBook.routes()) //accountBook 라우트 적용
+router.use('/posts', routerPosts.routes()) //posts 라우트 적용
+router.use('/auth', routerAuth.routes()) //auth 라우트 적용
+router.use('/comments', routerComments.routes()) //comments 라우트 적용
+router.use('/menus', routerMenus.routes()) //menus 라우트 적용
+router.use('/catbook', routerCatbook.routes()) //catbook 라우트 적용
+router.use('/accountBook', routerAccountBook.routes()) //accountBook 라우트 적용
 
 //cors 정책 적용
 const whitelist = [
@@ -125,7 +127,7 @@ app.listen(port, () => {
 })
 
 //heroku sleep 방지
-const http = require('http')
+
 setInterval(function () {
   http.get('http://blog-imki123-backend.herokuapp.com')
 }, 600000) //10분

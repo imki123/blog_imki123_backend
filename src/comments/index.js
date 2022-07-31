@@ -1,7 +1,7 @@
-const Router = require('koa-router')
-const Post = require('../Model/Post')
-const router = new Router()
+import Router from 'koa-router'
+import { Post } from '../Model/Post.js'
 
+export const routerComments = new Router()
 /*
 get: get(/comments/:postId), (/comments/recent)
 post: patch(/comments/:postId)
@@ -11,7 +11,7 @@ delete: patch(/comments/delete/:postId/:commentId)
 */
 
 // 댓글 불러오기(새로고침) get: get(/comments/:postId)
-router.get('/:postId', async (ctx) => {
+routerComments.get('/:postId', async (ctx) => {
   try {
     const { postId } = ctx.params
 
@@ -54,7 +54,7 @@ router.get('/:postId', async (ctx) => {
   }
 })
 // 댓글 추가 post: patch(/comments/:postId)
-router.patch('/:postId', async (ctx) => {
+routerComments.patch('/:postId', async (ctx) => {
   try {
     const { postId } = ctx.params
 
@@ -92,7 +92,7 @@ router.patch('/:postId', async (ctx) => {
   }
 })
 //특정 포스트의 특정 댓글수정 update: patch(/comments/:postId/:commentId)
-router.patch('/:postId/:commentId', async (ctx) => {
+routerComments.patch('/:postId/:commentId', async (ctx) => {
   try {
     const { postId, commentId } = ctx.params
     const post = await Post.findOne({ postId: postId })
@@ -122,7 +122,7 @@ router.patch('/:postId/:commentId', async (ctx) => {
   }
 })
 //특정 포스트의 특정 댓글삭제 delete: patch(/comments/delete/:postId/:commentId)
-router.patch('/delete/:postId/:commentId', async (ctx) => {
+routerComments.patch('/delete/:postId/:commentId', async (ctx) => {
   try {
     const { postId, commentId } = ctx.params
     const post = await Post.findOne({ postId: postId })
@@ -145,5 +145,3 @@ router.patch('/delete/:postId/:commentId', async (ctx) => {
     ctx.throw(500, e)
   }
 })
-
-module.exports = router

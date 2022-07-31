@@ -1,6 +1,6 @@
-const Router = require('koa-router')
-const router = new Router()
-const Sheet = require('../Model/Sheet')
+import Router from 'koa-router'
+import { Sheet } from '../Model/Sheet.js'
+export const routerAccountBook = new Router()
 
 /**
  * accountBook에서 사용하는 api
@@ -15,7 +15,7 @@ const Sheet = require('../Model/Sheet')
 // 라우터 설정
 
 // sheet 목록 전체 불러오기
-router.get('/sheet/', async (ctx) => {
+routerAccountBook.get('/sheet/', async (ctx) => {
   try {
     const sheet = await Sheet.find()
     console.log(sheet)
@@ -27,7 +27,7 @@ router.get('/sheet/', async (ctx) => {
 })
 
 // sheetId로 불러오기
-router.get('/sheet/:sheetId', async (ctx) => {
+routerAccountBook.get('/sheet/:sheetId', async (ctx) => {
   try {
     const { sheetId } = ctx.params
     const sheet = await Sheet.findOne({ sheetId: sheetId })
@@ -40,7 +40,7 @@ router.get('/sheet/:sheetId', async (ctx) => {
 })
 
 // sheet 업데이트
-router.patch('/sheet/:sheetId', async (ctx) => {
+routerAccountBook.patch('/sheet/:sheetId', async (ctx) => {
   const { sheetId } = ctx.params
   try {
     // sheetId로 찾고 업데이트
@@ -61,5 +61,3 @@ router.patch('/sheet/:sheetId', async (ctx) => {
     ctx.throw(500, e)
   }
 })
-
-module.exports = router

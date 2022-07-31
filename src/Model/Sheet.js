@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const { Schema } = mongoose
 const SheetSchema = new Schema({
@@ -7,6 +7,5 @@ const SheetSchema = new Schema({
   table: [[String | Number]],
 })
 
-const Sheet = mongoose.model('Sheet', SheetSchema)
+export const Sheet = mongoose.model('Sheet', SheetSchema)
 // Collection name 'Sheet' will change to 'sheets'
-module.exports = Sheet

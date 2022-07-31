@@ -1,10 +1,10 @@
-const Router = require('koa-router')
-const Post = require('../Model/Post')
-const PostBody = require('../Model/PostBody')
-const { addMenu, removeMenu } = require('../menus')
-const Joi = require('joi')
+import Router from 'koa-Router'
+import { Post } from '../Model/Post.js'
+import { PostBody } from '../Model/PostBody.js'
+import { addMenu, removeMenu } from '../menus/index.js'
+import Joi from 'joi'
 
-const router = new Router()
+export const routerPosts = new Router()
 
 /* posts 종류 : 
 	menus: get(/posts/menus)
@@ -17,7 +17,7 @@ const router = new Router()
 */
 // 라우터 설정
 //포스트 메뉴 목록 list /posts/menus
-router.get('/menus', async (ctx) => {
+routerPosts.get('/menus', async (ctx) => {
   try {
     const posts = await Post.find()
     const mainMenus = {}
@@ -61,7 +61,7 @@ router.get('/menus', async (ctx) => {
   }
 })
 //포스트 전체 목록 list
-router.get('/', async (ctx) => {
+routerPosts.get('/', async (ctx) => {
   try {
     const posts = await Post.find().sort({ postId: -1 })
     ctx.body = posts
@@ -70,7 +70,7 @@ router.get('/', async (ctx) => {
   }
 })
 //특정 태그 포스트 목록 list
-router.get('/tag/:tag', async (ctx) => {
+routerPosts.get('/tag/:tag', async (ctx) => {
   let page = parseInt(ctx.query.page, 10) || 1 //페이지를 숫자로 변환. 없다면 1
   if (page < 1) page = 1
 
@@ -104,7 +104,7 @@ router.get('/tag/:tag', async (ctx) => {
   }
 })
 //특정 포스트 조회 read
-router.get('/:postId', async (ctx) => {
+routerPosts.get('/:postId', async (ctx) => {
   try {
     const { postId } = ctx.params
 
@@ -153,7 +153,7 @@ router.get('/:postId', async (ctx) => {
   }
 })
 //특정 포스트바디 조회
-router.get('/postBody/:postId', async (ctx) => {
+routerPosts.get('/postBody/:postId', async (ctx) => {
   try {
     const { postId } = ctx.params
     const post = await PostBody.findOne({ postId: postId })
@@ -170,7 +170,7 @@ router.get('/postBody/:postId', async (ctx) => {
 })
 
 //포스트 작성 post
-router.post('/', async (ctx) => {
+routerPosts.post('/', async (ctx) => {
   const schema = Joi.object().keys({
     //객체가 다음 필드를 가지고 있음을 검증
     postId: Joi.number(),
@@ -235,8 +235,8 @@ router.post('/', async (ctx) => {
   }
 })
 //특정 포스트 수정 update
-//router.patch('/:postId', checkLogin, getPostByPostId, checkOwnPost, async ctx => {
-router.patch('/:postId', async (ctx) => {
+//routerPosts.patch('/:postId', checkLogin, getPostByPostId, checkOwnPost, async ctx => {
+routerPosts.patch('/:postId', async (ctx) => {
   try {
     const { postId } = ctx.params
     const { tags } = ctx.request.body
@@ -283,8 +283,8 @@ router.patch('/:postId', async (ctx) => {
 })
 
 //특정 포스트 삭제 delete : delete(/posts/:postId)
-//router.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
-router.delete('/:postId', async (ctx) => {
+//routerPosts.delete('/:postId', checkLogin, getPostByPostId, checkOwnPost, async (ctx) => {
+routerPosts.delete('/:postId', async (ctx) => {
   try {
     const { postId } = ctx.params
     const originPost = await Post.findOne({ postId: postId })
@@ -302,5 +302,3 @@ router.delete('/:postId', async (ctx) => {
     ctx.throw(500, e)
   }
 })
-
-module.exports = router

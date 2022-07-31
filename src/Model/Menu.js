@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const { Schema } = mongoose
 const MenuSchema = new Schema({
@@ -18,6 +18,5 @@ const MenuSchema = new Schema({
   parent: String,
 })
 
-const Menu = mongoose.model('Menu', MenuSchema)
+export const Menu = mongoose.model('Menu', MenuSchema)
 // Collection name 'Menu' will change to 'menus'
-module.exports = Menu

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const { Schema } = mongoose
 const PostBodySchema = new Schema({
@@ -6,6 +6,5 @@ const PostBodySchema = new Schema({
   body: Object,
 })
 
-const PostBody = mongoose.model('PostBody', PostBodySchema)
+export const PostBody = mongoose.model('PostBody', PostBodySchema)
 // Collection name 'PostBody' will change to 'postbodies'
-module.exports = PostBody

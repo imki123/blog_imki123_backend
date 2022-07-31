@@ -1,12 +1,11 @@
-const Router = require('koa-router')
-const Menu = require('../Model/Menu')
+import Router from 'koa-router'
+import { Menu } from '../Model/Menu.js'
 
-const router = new Router()
-
+export const routerMenus = new Router()
 /* menus 종류 : 
     get: get(/menus/)
 */
-const addMenu = async (name, level, parent, order) => {
+export const addMenu = async (name, level, parent, order) => {
   let menu = await Menu.findOne({ name: name }) //태그가 등록되어있는지 체크
   if (menu) {
     //있으면
@@ -33,7 +32,7 @@ const addMenu = async (name, level, parent, order) => {
   }
 }
 
-const removeMenu = async (name) => {
+export const removeMenu = async (name) => {
   let menu = await Menu.findOne({ name: name }) //태그가 등록되어있는지 체크
   if (menu) {
     //있으면
@@ -48,7 +47,7 @@ const removeMenu = async (name) => {
 }
 // 라우터 설정
 //get: get(/menus/)
-router.get('/', async (ctx) => {
+routerMenus.get('/', async (ctx) => {
   try {
     const originMenus = await Menu.find().sort({ level: 1, order: 1, name: 1 })
     let menus = []
@@ -82,7 +81,7 @@ router.get('/', async (ctx) => {
   }
 })
 //add: post(/menus/)
-router.post('/', async (ctx) => {
+routerMenus.post('/', async (ctx) => {
   try {
     const { name } = ctx.request.body
     let menu = await Menu.findOne({ name: name })
@@ -102,5 +101,3 @@ router.post('/', async (ctx) => {
     ctx.throw(500, e)
   }
 })
-
-module.exports = { router, addMenu, removeMenu }

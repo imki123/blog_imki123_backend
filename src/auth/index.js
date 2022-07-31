@@ -1,10 +1,10 @@
-const Router = require('koa-router')
-const User = require('../Model/User')
-const Post = require('../Model/Post')
-const setCookieSecureFalse = require('../lib/setCookieSecureFalse')
+import Router from 'koa-router'
+import { User } from '../Model/User.js'
+import { Post } from '../Model/Post.js'
+import setCookieSecureFalse from '../lib/setCookieSecureFalse.js'
+import Joi from 'joi'
 
-const Joi = require('joi')
-const router = new Router()
+export const routerAuth = new Router()
 
 /* auth 종류 : 
 	getUserInfo: post(/auth/user)
@@ -27,7 +27,7 @@ let cookieOptions = {
 
 // 라우터 설정
 // getUserInfo: post(/auth/user)
-router.post('/user', async (ctx) => {
+routerAuth.post('/user', async (ctx) => {
   const { username } = ctx.request.body.data
   console.log(username)
   try {
@@ -44,7 +44,7 @@ router.post('/user', async (ctx) => {
 })
 
 // 유저 등록 register: post(/auth/register/)
-router.post('/register', async (ctx) => {
+routerAuth.post('/register', async (ctx) => {
   const schema = Joi.object().keys({
     //객체가 다음 필드를 가지고 있음을 검증
     username: Joi.string().min(3).max(20).required(), //required가 있으면 필수항목
@@ -86,7 +86,7 @@ router.post('/register', async (ctx) => {
   }
 })
 //로그인 login: post(/auth/login)
-router.post('/login', async (ctx) => {
+routerAuth.post('/login', async (ctx) => {
   const { username, password } = ctx.request.body
   if (!username || !password) {
     console.log('No username or password')
@@ -119,7 +119,7 @@ router.post('/login', async (ctx) => {
   }
 })
 //OAuth: post(/auth/oauth)
-router.post('/oauth', async (ctx) => {
+routerAuth.post('/oauth', async (ctx) => {
   const { username, email, imageUrl } = ctx.request.body
   let user
   try {
@@ -161,7 +161,7 @@ router.post('/oauth', async (ctx) => {
 })
 
 //check: get(/auth/check)
-router.get('/check', async (ctx) => {
+routerAuth.get('/check', async (ctx) => {
   const { user } = ctx.state
 
   if (!user) {
@@ -172,7 +172,7 @@ router.get('/check', async (ctx) => {
   ctx.body = user
 })
 //logout: post(/auth/logout)
-router.post('/logout', async (ctx) => {
+routerAuth.post('/logout', async (ctx) => {
   //http통신이면 secure: false로 변경
   cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
@@ -181,7 +181,7 @@ router.post('/logout', async (ctx) => {
   ctx.status = 204 //No Content
 })
 //withdraw: delete(/auth/withdraw) 회원탈퇴
-router.delete('/withdraw', async (ctx) => {
+routerAuth.delete('/withdraw', async (ctx) => {
   const { username, password } = ctx.request.body
   if (!username || !password) {
     console.log('No username or password')
@@ -217,7 +217,7 @@ router.delete('/withdraw', async (ctx) => {
   }
 })
 //merge: post(/auth/merge)
-router.post('/merge', async (ctx) => {
+routerAuth.post('/merge', async (ctx) => {
   const { username, mergedUsername } = ctx.request.body
   if (!username || !mergedUsername) {
     ctx.state = 401
@@ -259,5 +259,3 @@ router.post('/merge', async (ctx) => {
     ctx.throw(500, e)
   }
 })
-
-module.exports = router
