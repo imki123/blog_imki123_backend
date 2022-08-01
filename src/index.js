@@ -12,6 +12,7 @@ import { routerMenus } from './menus/index.js'
 import { routerCatbook } from './catbook/index.js'
 import { routerAccountBook } from './accountBook/index.js'
 import { jwtMiddleware } from './lib/jwtMiddleware.js'
+import { accountBookMiddleware } from './lib/accountBookMiddleware.js'
 
 config()
 
@@ -116,6 +117,7 @@ app.use(
 )
 //jwtMiddleware 적용
 app.use(jwtMiddleware)
+app.use(accountBookMiddleware)
 
 //app 인스턴스에 라우터 적용
 app.use(router.routes()).use(router.allowedMethods())

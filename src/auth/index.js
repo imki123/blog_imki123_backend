@@ -17,7 +17,7 @@ export const routerAuth = new Router()
 	merge: post(/auth/merge)
 */
 
-let cookieOptions = {
+export const cookieOptions = {
   maxAge: 1000 * 60 * 60 * 24 * 7, //7일
   secure: true, //CORS
   sameSite: 'none', //CORS
@@ -78,9 +78,9 @@ routerAuth.post('/register', async (ctx) => {
     const token = user.generateToken()
 
     //http통신이면 secure: false로 변경
-    cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
+    const options = setCookieSecureFalse(cookieOptions, ctx)
 
-    ctx.cookies.set('access_token', token, cookieOptions)
+    ctx.cookies.set('access_token', token, options)
   } catch (e) {
     ctx.throw(500, e)
   }
