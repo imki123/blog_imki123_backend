@@ -15,7 +15,7 @@ export const accountBookMiddleware = async (ctx, next) => {
   console.log('')
   const token = ctx.cookies.get('accountBook_access_token')
   if (token === undefined || token === '') {
-    console.log('accountBookMiddleware pass - no token')
+    console.log('accountBookMiddleware pass: no token')
     return next() //액세스 토큰이 없으면 미들웨어 패스
   }
 
@@ -30,7 +30,6 @@ export const accountBookMiddleware = async (ctx, next) => {
       username: decoded.username,
       email: decoded.email,
     }
-    console.log('token user:', ctx.state.user)
 
     //토큰의 남은 유효 기간이 3.5일 미만이면 재발급
     const now = Math.floor(
