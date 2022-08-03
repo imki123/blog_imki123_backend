@@ -4,6 +4,7 @@ const { Schema } = mongoose
 const SheetSchema = new Schema({
   sheetId: Number,
   name: String,
+  order: Number,
   table: [[String | Number]],
 })
 
