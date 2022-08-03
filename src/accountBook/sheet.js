@@ -17,7 +17,7 @@ import { Sheet } from '../Model/Sheet.js'
 // sheet 목록 전체 불러오기
 routerSheet.get('/', async (ctx) => {
   try {
-    const sheet = await Sheet.find()
+    const sheet = await Sheet.find().sort({ sheetId: 1 })
     if (sheet) ctx.body = sheet
     else ctx.status = 204 //No Content
   } catch (e) {
@@ -32,6 +32,27 @@ routerSheet.get('/:sheetId', async (ctx) => {
     const sheet = await Sheet.findOne({ sheetId: sheetId })
     if (sheet) ctx.body = sheet
     else ctx.status = 204 //No Content
+  } catch (e) {
+    ctx.throw(500, e)
+  }
+})
+
+// sheet 추가
+routerSheet.post('/', async (ctx) => {
+  try {
+    //sheetId 생성
+    let sheetId = 1
+    const sheets = await Sheet.find().exec()
+    if (sheets.length > 0) {
+      sheetId = sheets[sheets.length - 1].sheetId + 1
+    }
+    const sheet = new Sheet({
+      sheetId: sheetId,
+      name: 'Sheet' + sheetId,
+      table: [],
+    })
+    await sheet.save()
+    ctx.body = sheet
   } catch (e) {
     ctx.throw(500, e)
   }
