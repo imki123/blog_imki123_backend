@@ -118,3 +118,20 @@ routerSheet.patch('/:fromId/:toId', async (ctx) => {
     ctx.throw(500, e)
   }
 })
+// sheet 삭제
+routerSheet.delete('/:sheetId', async (ctx) => {
+  const { sheetId } = ctx.params
+  try {
+    // sheetId로 찾고 업데이트
+    const deleted = await Sheet.findOneAndDelete({ sheetId: sheetId })
+    if (deleted) {
+      ctx.body = deleted
+    } else {
+      ctx.status = 204 //No content
+      return
+    }
+    return
+  } catch (e) {
+    ctx.throw(500, e)
+  }
+})
