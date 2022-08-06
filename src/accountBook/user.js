@@ -32,7 +32,7 @@ routerUser.post('/checkEmail', async (ctx) => {
 routerUser.post('/checkToken', async (ctx) => {
   try {
     if (ctx.state.user) ctx.body = ctx.cookies.get('accountBook_access_token')
-    else ctx.throw(403)
+    else ctx.body = false
   } catch (e) {
     ctx.throw(500, e)
   }
@@ -41,12 +41,19 @@ routerUser.post('/checkToken', async (ctx) => {
 // 로그아웃 BE쿠키 제거
 routerUser.post('/logout', async (ctx) => {
   try {
-    console.log('logout!')
     if (ctx.state.user) {
-      ctx.cookies.set('accountBook_access_token')
-      ctx.body = ctx.state.user.email
-    } else ctx.throw(403)
+      console.log('Logout!', ctx.state.user.email)
+
+      //http통신이면 secure: false로 변경
+      const options = setCookieSecureFalse(cookieOptions, ctx)
+      ctx.cookies.set('accountBook_access_token', '', options)
+      ctx.body = true
+    } else {
+      console.log('Logout Fail!')
+      ctx.throw(403)
+    }
   } catch (e) {
+    console.log('Logout Fail!')
     ctx.throw(500, e)
   }
 })
