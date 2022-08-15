@@ -19,7 +19,7 @@ routerUser.post('/checkEmail', async (ctx) => {
       const options = setCookieSecureFalse(cookieOptions, ctx)
 
       ctx.body = { token: token, username: user.username } // jwt 토큰 FE에 보내기
-      ctx.cookies.set('accountBook_access_token', token, options)
+      ctx.cookies.set('account_book_access_token', token, options)
     } else {
       ctx.throw(403, e)
     }
@@ -31,7 +31,7 @@ routerUser.post('/checkEmail', async (ctx) => {
 // 토큰 이메일 체크 (3.5일 이하면 미들웨어에서 토큰 재발급)
 routerUser.post('/checkToken', async (ctx) => {
   try {
-    if (ctx.state.user) ctx.body = ctx.cookies.get('accountBook_access_token')
+    if (ctx.state.user) ctx.body = ctx.cookies.get('account_book_access_token')
     else ctx.body = false
   } catch (e) {
     ctx.throw(500, e)
@@ -46,7 +46,7 @@ routerUser.post('/logout', async (ctx) => {
 
       //http통신이면 secure: false로 변경
       const options = setCookieSecureFalse(cookieOptions, ctx)
-      ctx.cookies.set('accountBook_access_token', '', options)
+      ctx.cookies.set('account_book_access_token', '', options)
       ctx.body = true
     } else {
       console.log('Logout Fail!')

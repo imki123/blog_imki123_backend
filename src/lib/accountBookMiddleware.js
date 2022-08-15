@@ -13,7 +13,7 @@ let cookieOptions = {
 export const accountBookMiddleware = async (ctx, next) => {
   // 액세스 토큰 있는지 체크
   console.log('')
-  const token = ctx.cookies.get('accountBook_access_token')
+  const token = ctx.cookies.get('account_book_access_token')
   if (token === undefined || token === '') {
     console.log('accountBookMiddleware pass: no token')
     return next() //액세스 토큰이 없으면 미들웨어 패스
