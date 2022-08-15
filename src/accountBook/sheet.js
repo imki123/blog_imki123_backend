@@ -55,7 +55,7 @@ routerSheet.post('/', async (ctx) => {
       table: [],
     })
     await sheet.save()
-    ctx.body = sheet
+    ctx.body = true
   } catch (e) {
     ctx.throw(500, e)
   }
@@ -74,7 +74,7 @@ routerSheet.patch('/:sheetId', async (ctx) => {
       { new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
     )
     if (updated) {
-      ctx.body = updated
+      ctx.body = true
     } else {
       ctx.status = 204 //No content
       return
@@ -108,7 +108,7 @@ routerSheet.patch('/:fromId/:toId', async (ctx) => {
       { new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
     )
     if (fromSheet && toSheet) {
-      ctx.body = [fromSheet, toSheet]
+      ctx.body = true
     } else {
       ctx.status = 204 //No content
       return
@@ -125,7 +125,7 @@ routerSheet.delete('/:sheetId', async (ctx) => {
     // sheetId로 찾고 업데이트
     const deleted = await Sheet.findOneAndDelete({ sheetId: sheetId })
     if (deleted) {
-      ctx.body = deleted
+      ctx.body = true
     } else {
       ctx.status = 204 //No content
       return
