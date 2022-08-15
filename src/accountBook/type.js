@@ -20,15 +20,15 @@ routerType.get('/', async (ctx) => {
 routerType.patch('/', async (ctx) => {
   try {
     // typeId로 찾고 업데이트
-    const updated = await Sheet.findOneAndUpdate(
+    const updated = await Type.findOneAndUpdate(
       { typeId: 1 },
       {
-        type: ctx.request.body,
+        types: ctx.request.body,
       },
       { new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환
     )
     if (updated) {
-      ctx.body = updated
+      ctx.body = true
     } else {
       ctx.status = 204 //No content
       return

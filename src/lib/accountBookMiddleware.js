@@ -36,7 +36,7 @@ export const accountBookMiddleware = async (ctx, next) => {
       new Date(new Date().getTime() + 9 * 60 * 60 * 1000) / 1000,
     )
     if (decoded.exp - now < 60 * 60 * 24 * 3.5) {
-      const user = await User.findById(decoded._id)
+      const user = await User.findOne({ userId: decoded.userId })
       //토큰 재발급
       const token = user.generateToken()
       ctx.cookies.set('access_token', token, cookieOptions)
