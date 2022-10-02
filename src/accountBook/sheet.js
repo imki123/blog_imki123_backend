@@ -46,7 +46,7 @@ routerSheet.post('/', async (ctx) => {
     const sheets = await Sheet.find().sort({ sheetId: 1 })
     if (sheets.length > 0) {
       sheetId = sheets[sheets.length - 1].sheetId + 1
-      order = sheets.length + 1
+      order = sheetId
     }
     const sheet = new Sheet({
       sheetId: sheetId,
