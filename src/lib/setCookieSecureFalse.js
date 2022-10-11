@@ -6,9 +6,9 @@ export default function setCookieSecureFalse(cookieOptions, ctx) {
       secure: false,
       sameSite: 'Lax',
     }
-    console.log(
-      '-- ctx.request.protocoll is http. cookie.secure = false, cookie.sameSite = Lax. ',
-    )
+    // console.log(
+    //   '-- ctx.request.protocoll is http. cookie.secure = false, cookie.sameSite = Lax. ',
+    // )
   }
   return cookieOptions
 }
