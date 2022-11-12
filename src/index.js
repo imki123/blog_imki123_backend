@@ -79,6 +79,7 @@ router.use('/accountBook', routerAccountBook.routes()) //accountBook 라우트 �
 const whitelist = [
   'http://localhost:3000',
   'http://localhost:4001', // account-book
+  'http://192.168.0.10:4001', // account-book
   'https://imki123.github.io',
   'http://localhost:19006',
   'http://localhost:45678',

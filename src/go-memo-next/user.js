@@ -7,12 +7,11 @@ export const routerUser = new Router()
 
 // /accountBook/user/
 // 이메일 체크하고 쿠키저장, FE에 토큰보내기. 로그인
-routerUser.post('/checkEmail', async (ctx) => {
+routerUser.post('/login', async (ctx) => {
   const { username, email } = ctx.request.body // username, email
   const user = new AccountBookUser({ username: username, email: email })
   try {
     // 이메일 체크
-    console.log('/checkEmail:', user)
     if (user.checkEmail(email)) {
       const token = user.generateToken()
 
