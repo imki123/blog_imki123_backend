@@ -18,7 +18,7 @@ export const routerAuth = new Router()
 */
 
 export const cookieOptions = {
-  maxAge: 1000 * 60 * 60 * 24 * 7, //7일
+  maxAge: 1000 * 60 * 60 * 24 * 365, //365일
   secure: true, //CORS
   sameSite: 'none', //CORS
   overwrite: true,

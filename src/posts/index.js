@@ -259,7 +259,7 @@ routerPosts.patch('/:postId', async (ctx) => {
       {
         ...ctx.request.body,
         body: '',
-        //publishedDate: new Date(new Date().getTime() + 9 * 60 * 60 * 1000),
+        //publishedDate: new Date(new Date().getTime() + 9 * 60 * 60 * 1000), // 한국 +9시간
         user: ctx.state.user,
       },
       { new: true }, // 업데이트 후의 데이터를 반환, false라면 업데이트 전의 데이터 반환

@@ -17,7 +17,7 @@ const PostSchema = new Schema({
   thumbnail: Object,
   publishedDate: {
     type: Date,
-    default: () => new Date(new Date().getTime() + 9 * 60 * 60 * 1000), //현재날짜 기본값
+    default: () => new Date(new Date().getTime() + 9 * 60 * 60 * 1000), // 한국 +9시간
   },
   user: {
     username: String,
@@ -29,7 +29,7 @@ const PostSchema = new Schema({
       content: String,
       publishedDate: {
         type: Date,
-        default: () => new Date(new Date().getTime() + 9 * 60 * 60 * 1000), //현재날짜 기본값
+        default: () => new Date(new Date().getTime() + 9 * 60 * 60 * 1000), // 한국 +9시간
       },
       updated: {
         type: Boolean,

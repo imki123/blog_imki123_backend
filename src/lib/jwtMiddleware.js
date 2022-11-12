@@ -3,7 +3,7 @@ import { User } from '../Model/User.js'
 import setCookieSecureFalse from './setCookieSecureFalse.js'
 
 let cookieOptions = {
-  maxAge: 1000 * 60 * 60 * 24 * 7, //7일
+  maxAge: 1000 * 60 * 60 * 24 * 365, //365일
   secure: true, //CORS
   sameSite: 'none', //CORS
   overwrite: true,
@@ -44,11 +44,11 @@ export const jwtMiddleware = async (ctx, next) => {
       oAuth: decoded.oAuth,
     }
 
-    //토큰의 남은 유효 기간이 3.5일 미만이면 재발급
+    //토큰의 남은 유효 기간이 300일 미만이면 재발급
     const now = Math.floor(
-      new Date(new Date().getTime() + 9 * 60 * 60 * 1000) / 1000,
+      new Date(new Date().getTime() + 9 * 60 * 60 * 1000) / 1000, // 한국 +9시간
     )
-    if (decoded.exp - now < 60 * 60 * 24 * 3.5) {
+    if (decoded.exp - now < 60 * 60 * 24 * 300) {
       const user = await User.findById(decoded._id)
       //토큰 재발급
       const token = user.generateToken()

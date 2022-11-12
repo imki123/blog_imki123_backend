@@ -31,6 +31,7 @@ routerUser.post('/checkEmail', async (ctx) => {
 
 // 토큰 이메일 체크 (3.5일 이하면 미들웨어에서 토큰 재발급)
 routerUser.post('/checkToken', async (ctx) => {
+  console.log(ctx.state.user)
   try {
     if (ctx.state.user) ctx.body = ctx.cookies.get('account_book_access_token')
     else ctx.body = false

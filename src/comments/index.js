@@ -73,7 +73,7 @@ routerComments.patch('/:postId', async (ctx) => {
           (ctx.state.user && ctx.state.user.username) ||
           ctx.request.body.data.username, //로컬에서는 state가 프로토콜 차이로 정상적으로 동작이 안됨.
         content: ctx.request.body.data.content,
-        publishedDate: new Date(new Date().getTime() + 9 * 60 * 60 * 1000),
+        publishedDate: new Date(new Date().getTime() + 9 * 60 * 60 * 1000), // 한국 +9시간
       })
       const updated = await Post.findOneAndUpdate(
         { postId: postId },
@@ -101,7 +101,7 @@ routerComments.patch('/:postId/:commentId', async (ctx) => {
       for (let i of comments) {
         if (i.commentId === Number(commentId)) {
           i.content = ctx.request.body.data.content //axios의 data
-          i.publishedDate = new Date(new Date().getTime() + 9 * 60 * 60 * 1000)
+          i.publishedDate = new Date(new Date().getTime() + 9 * 60 * 60 * 1000) // 한국 +9시간
           i.updated = true
         }
       }
