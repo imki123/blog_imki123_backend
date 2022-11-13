@@ -1,8 +1,8 @@
 import Router from 'koa-router'
 import { User } from '../Model/User.js'
 import { Post } from '../Model/Post.js'
-import setCookieSecureFalse from '../lib/setCookieSecureFalse.js'
 import Joi from 'joi'
+import { setCookieOptionsByProtocol } from '../lib/cookieOptions.js'
 
 export const routerAuth = new Router()
 
@@ -16,14 +16,6 @@ export const routerAuth = new Router()
 
 	merge: post(/auth/merge)
 */
-
-export const cookieOptions = {
-  maxAge: 1000 * 60 * 60 * 24 * 365, //365일
-  secure: true, //CORS
-  sameSite: 'none', //CORS
-  overwrite: true,
-  httpOnly: true,
-}
 
 // 라우터 설정
 // getUserInfo: post(/auth/user)
@@ -77,10 +69,7 @@ routerAuth.post('/register', async (ctx) => {
     //토큰 발급
     const token = user.generateToken()
 
-    //http통신이면 secure: false로 변경
-    const options = setCookieSecureFalse(cookieOptions, ctx)
-
-    ctx.cookies.set('access_token', token, options)
+    ctx.cookies.set('access_token', token, setCookieOptionsByProtocol(ctx))
   } catch (e) {
     ctx.throw(500, e)
   }
@@ -110,10 +99,7 @@ routerAuth.post('/login', async (ctx) => {
     //토큰 발급
     const token = user.generateToken()
 
-    //http통신이면 secure: false로 변경
-    cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
-
-    ctx.cookies.set('access_token', token, cookieOptions)
+    ctx.cookies.set('access_token', token, setCookieOptionsByProtocol(ctx))
   } catch (e) {
     ctx.throw(500, e)
   }
@@ -150,10 +136,7 @@ routerAuth.post('/oauth', async (ctx) => {
     //토큰 발급
     const token = user.generateToken()
 
-    //http통신이면 secure: false로 변경
-    cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
-
-    ctx.cookies.set('access_token', token, cookieOptions)
+    ctx.cookies.set('access_token', token, setCookieOptionsByProtocol(ctx))
     ctx.body = user.serialize()
   } catch (e) {
     ctx.throw(500, e)
@@ -173,11 +156,8 @@ routerAuth.get('/check', async (ctx) => {
 })
 //logout: post(/auth/logout)
 routerAuth.post('/logout', async (ctx) => {
-  //http통신이면 secure: false로 변경
-  cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
-
-  ctx.cookies.set('access_token', '', cookieOptions) //회원정보 쿠키
-  ctx.cookies.set('G_AUTHUSER_H', '', cookieOptions) //구글로그인 쿠키
+  ctx.cookies.set('access_token', '', setCookieOptionsByProtocol(ctx)) //회원정보 쿠키
+  ctx.cookies.set('G_AUTHUSER_H', '', setCookieOptionsByProtocol(ctx)) //구글로그인 쿠키
   ctx.status = 204 //No Content
 })
 //withdraw: delete(/auth/withdraw) 회원탈퇴
@@ -206,11 +186,8 @@ routerAuth.delete('/withdraw', async (ctx) => {
     //아이디 삭제
     user.deleteByUsername(username)
 
-    //http통신이면 secure: false로 변경
-    cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
-
     //토큰 삭제
-    ctx.cookies.set('access_token', '', cookieOptions)
+    ctx.cookies.set('access_token', '', setCookieOptionsByProtocol(ctx))
     ctx.status = 200 //No Content
   } catch (e) {
     ctx.throw(500, e)

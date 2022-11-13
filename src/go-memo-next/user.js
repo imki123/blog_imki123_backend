@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 import { cookieOptions } from '../auth/index.js'
-import setCookieSecureFalse from '../lib/setCookieSecureFalse.js'
+import { setCookieOptionsByProtocol } from '../lib/cookieOptions.js'
 import { AccountBookUser } from '../Model/AccountBookUser.js'
 
 export const routerUser = new Router()
@@ -15,11 +15,12 @@ routerUser.post('/login', async (ctx) => {
     if (user.checkEmail(email)) {
       const token = user.generateToken()
 
-      //http통신이면 secure: false로 변경
-      const options = setCookieSecureFalse(cookieOptions, ctx)
-
       ctx.body = { token: token, username: user.username } // jwt 토큰 FE에 보내기
-      ctx.cookies.set('account_book_access_token', token, options)
+      ctx.cookies.set(
+        'account_book_access_token',
+        token,
+        setCookieOptionsByProtocol(ctx),
+      )
     } else {
       ctx.throw(403, e)
     }
@@ -44,9 +45,11 @@ routerUser.post('/logout', async (ctx) => {
     if (ctx.state.user) {
       console.log('Logout!', ctx.state.user.email)
 
-      //http통신이면 secure: false로 변경
-      const options = setCookieSecureFalse(cookieOptions, ctx)
-      ctx.cookies.set('account_book_access_token', '', options)
+      ctx.cookies.set(
+        'account_book_access_token',
+        '',
+        setCookieOptionsByProtocol(ctx),
+      )
       ctx.body = true
     } else {
       console.log('Logout Fail!')

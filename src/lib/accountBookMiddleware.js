@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { User } from '../Model/User.js'
-import setCookieSecureFalse from './setCookieSecureFalse.js'
+import { setCookieOptionsByProtocol } from './cookieOptions.js'
 
 let cookieOptions = {
   maxAge: 1000 * 60 * 60 * 24 * 365, // 365일
@@ -17,9 +17,6 @@ export const accountBookMiddleware = async (ctx, next) => {
     console.log('>>> accountBookMiddleware Pass: No account_book_access_token')
     return next() //액세스 토큰이 없으면 미들웨어 패스
   }
-
-  // http통신이면 secure: false로 변경
-  cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
 
   try {
     // 토큰을 시크릿키로 디코드해서 ctx.state.user에 저장
@@ -40,7 +37,7 @@ export const accountBookMiddleware = async (ctx, next) => {
       const user = await User.findOne({ userId: decoded.userId })
       //토큰 재발급
       const token = user.generateToken()
-      ctx.cookies.set('access_token', token, cookieOptions)
+      ctx.cookies.set('access_token', token, setCookieOptionsByProtocol(ctx))
     }
 
     console.log('[JWT] success:', decoded.username, decoded.email)

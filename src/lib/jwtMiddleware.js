@@ -1,14 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { User } from '../Model/User.js'
-import setCookieSecureFalse from './setCookieSecureFalse.js'
-
-let cookieOptions = {
-  maxAge: 1000 * 60 * 60 * 24 * 365, //365일
-  secure: true, //CORS
-  sameSite: 'none', //CORS
-  overwrite: true,
-  httpOnly: true,
-}
+import { setCookieOptionsByProtocol } from './cookieOptions.js'
 
 export const jwtMiddleware = async (ctx, next) => {
   //토큰 있는지 체크
@@ -18,7 +10,7 @@ export const jwtMiddleware = async (ctx, next) => {
   }
 
   //http통신이면 secure: false로 변경
-  cookieOptions = setCookieSecureFalse(cookieOptions, ctx)
+  cookieOptions = setCookieOptionsByProtocol(ctx)
 
   try {
     //토큰을 디코드해서 state.user에 저장
