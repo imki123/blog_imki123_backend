@@ -129,8 +129,8 @@ app.listen(port, () => {
   console.log(`Listening on port: ${port}\nConnect to http://localhost:${port}`)
 })
 
-//heroku sleep 방지
+// render sleep 방지
 
 setInterval(function () {
-  http.get('http://blog-imki123-backend.herokuapp.com')
-}, 600000) //10분
+  http.get(process.env.REACT_APP_URL)
+}, 1000 * 60 * 10) //10분
