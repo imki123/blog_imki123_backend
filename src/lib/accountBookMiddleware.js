@@ -2,14 +2,6 @@ import jwt from 'jsonwebtoken'
 import { User } from '../Model/User.js'
 import { setCookieOptionsByProtocol } from './cookieOptions.js'
 
-let cookieOptions = {
-  maxAge: 1000 * 60 * 60 * 24 * 365, // 365일
-  secure: true, //CORS
-  sameSite: 'none', //CORS
-  overwrite: true,
-  httpOnly: true,
-}
-
 export const accountBookMiddleware = async (ctx, next) => {
   // 액세스 토큰 있는지 체크
   const token = ctx.cookies.get('account_book_access_token')

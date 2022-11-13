@@ -9,9 +9,6 @@ export const jwtMiddleware = async (ctx, next) => {
     return next() //토큰이 없음
   }
 
-  //http통신이면 secure: false로 변경
-  cookieOptions = setCookieOptionsByProtocol(ctx)
-
   try {
     //토큰을 디코드해서 state.user에 저장
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -22,7 +19,7 @@ export const jwtMiddleware = async (ctx, next) => {
       if (!user) {
         console.log('일반 로그인인데 DB에 아이디가 없어서 로그아웃')
         ctx.status = 204 //No content
-        ctx.cookies.set('access_token', '', cookieOptions)
+        ctx.cookies.set('access_token', '', setCookieOptionsByProtocol(ctx))
         ctx.state.user = null
         return next()
       }
@@ -44,7 +41,7 @@ export const jwtMiddleware = async (ctx, next) => {
       const user = await User.findById(decoded._id)
       //토큰 재발급
       const token = user.generateToken()
-      ctx.cookies.set('access_token', token, cookieOptions)
+      ctx.cookies.set('access_token', token, setCookieOptionsByProtocol(ctx))
     }
 
     console.log('[JWT]', decoded.username, decoded.email)
